@@ -7,7 +7,7 @@ module instruction_decode(
     output logic branch,
 
     output logic [2:0] load_type,
-    output logic [2:0] store_type,
+    output logic [1:0] store_type,
     output logic [2:0] write_back_type,
     output logic [2:0] branch_type,
     output logic [2:0] compare_type,
@@ -37,7 +37,24 @@ module instruction_decode(
         LOAD_WORD,
         LOAD_BYTE_U,
         LOAD_HALF_U
-    };
+    } load_type_enum;
+
+    typedef enum logic [1:0] {
+        STORE_NONE,
+        STORE_BYTE,
+        STORE_HALF,
+        STORE_WORD
+    } store_type_enum;
+
+    typedef enum logic [2:0] {
+        BRANCH_NONE,
+        BRANCH_BEQ,
+        BRANCH_BNE,
+        BRANCH_BLT,
+        BRANCH_BGE,
+        BRANCH_BLTU,
+        BRANCH_BGEU
+    } branch_type_enum;
 
     typedef enum logic [3:0] {
         ALU_ADD,
@@ -60,7 +77,7 @@ module instruction_decode(
                              input branch_input,
                              input [2:0] write_back_type_input,
                              input [2:0] load_type_input,
-                             input [2:0] store_type_input,
+                             input [1:0] store_type_input,
                              input [2:0] branch_type_input,
                              input [3:0] ALU_op_input
                              );
@@ -77,10 +94,18 @@ module instruction_decode(
         ALU_op = ALU_op_input;
     endfunction
     
+    wire [6:0] opcode = instruction[6:0];
+    wire [2:0] funct3 = instruction[14:12];
+    wire [6:0] funct7 = instruction[31:25];
+    wire [4:0] rd =  instruction[11:7];
+    wire [4:0] rs1 = instruction[19:15];
+    wire [4:0] rs2 = instruction[24:20];
+    
     always_comb begin
-        set_status(0, 0, 0, 0, 0, 0, WRITE_BACK_NONE, LOAD_NONE, 2'b00, 3'b000, ALU_ADD);
+        set_status(0, 0, 0, 0, 0, 0, WRITE_BACK_NONE, LOAD_NONE, STORE_NONE, BRANCH_NONE, ALU_ADD);
         case (instruction[6:0]) begin
             LOAD: begin
+                
                 set_status(1, 1, 0, 1, 1, 0, 4'b0010)
             end
             STORE: begin
