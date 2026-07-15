@@ -1,34 +1,36 @@
-module instruction_decode(
+module instruction_decode( //COMBINATORIAL
     output logic reg_write,
-    output logic mem_read,
-    output logic mem_write,
-    output logic mem_to_reg,
-    output logic ALU_source, //0 is reg&reg, 1 is reg&imm
-    output logic branch,
+    output logic jump,
 
     output logic [2:0] load_type,
     output logic [1:0] store_type,
-    output logic [2:0] write_back_type,
+    output logic [2:0] writeback_type,
     output logic [2:0] branch_type,
-    output logic [2:0] compare_type,
-    output logic [3:0] ALU_op,
+    output logic [0:0] alu_source, //0 is reg&reg, 1 is reg&imm
+    output logic [3:0] alu_op,
+    output logic [2:0] imm_type,
+
+    output logic [4:0] rd,
+    output logic [4:0] rs1,
+    output logic [4:0] rs2,
 
     input logic [31:0] instruction
 ); 
 
     localparam LOAD = 7'b0000011, 
                STORE = 7'b0100011,
-               JUMP = 7'b1100011, 
                R_TYPE = 7'b0110011,
-               I_TYPE = 7'b0010011;
+               I_TYPE = 7'b0010011,
+               JUMP = 7'b1100011;
+               
 
     typedef enum logic [2:0] {
-        WRITE_BACK_NONE,
-        WRITE_BACK_ALU,
-        WRITE_BACK_MEM,
-        WRITE_BACK_PC4,
-        WRITE_BACK_IMM
-    } write_back_enum;
+        writeback_NONE,
+        writeback_ALU,
+        writeback_MEM,
+        writeback_PC4,
+        writeback_IMM
+    } writeback_enum;
 
     typedef enum logic [2:0] {
         LOAD_NONE,
@@ -56,6 +58,11 @@ module instruction_decode(
         BRANCH_BGEU
     } branch_type_enum;
 
+    typedef enum logic [0:0] {
+        REG_REG,
+        REG_IMM
+    } alu_source_enum;
+
     typedef enum logic [3:0] {
         ALU_ADD,
         ALU_SUB,
@@ -69,83 +76,92 @@ module instruction_decode(
         ALU_SLTU //SLT but with unsigned
     } alu_op_enum;
 
-    function void set_status(input reg_write_input,
-                             input mem_read_input, 
-                             input mem_write_input, 
-                             input mem_to_reg_input, 
-                             input ALU_source_input,
-                             input branch_input,
-                             input [2:0] write_back_type_input,
-                             input [2:0] load_type_input,
-                             input [1:0] store_type_input,
-                             input [2:0] branch_type_input,
-                             input [3:0] ALU_op_input
-                             );
-        reg_write = reg_write_input;
-        mem_read = mem_read_input;
-        mem_write = mem_write_input;
-        mem_to_reg = mem_to_reg_input;
-        ALU_source = ALU_source_input;
-        branch = branch_input;
-        write_back_type = write_back_type_input;
-        load_type = load_type_input;
-        store_type = store_type_input;
-        branch_type = branch_type_input;
-        ALU_op = ALU_op_input;
-    endfunction
+    typedef enum logic [2:0] {
+        IMM_NONE,
+        IMM_I,
+        IMM_S,
+        IMM_B,
+        IMM_U,
+        IMM_J
+    } imm_type_enum;
     
     wire [6:0] opcode = instruction[6:0];
     wire [2:0] funct3 = instruction[14:12];
     wire [6:0] funct7 = instruction[31:25];
-    wire [4:0] rd =  instruction[11:7];
-    wire [4:0] rs1 = instruction[19:15];
-    wire [4:0] rs2 = instruction[24:20];
+    assign rd =  instruction[11:7];
+    assign rs1 = instruction[19:15];
+    assign rs2 = instruction[24:20];
     
     always_comb begin
-        set_status(0, 0, 0, 0, 0, 0, WRITE_BACK_NONE, LOAD_NONE, STORE_NONE, BRANCH_NONE, ALU_ADD);
-        case (instruction[6:0]) begin
+        reg_write = 0;
+        jump = 0;
+        load_type = LOAD_NONE;
+        store_type = STORE_NONE;
+        writeback_type = WRITEBACK_NONE;
+        branch_type = BRANCH_NONE;
+        alu_source = REG_REG;
+        alu_op = ALU_ADD;
+        imm_type = IMM_NONE;
+        
+        case (opcode) begin
             LOAD: begin
-                
-                set_status(1, 1, 0, 1, 1, 0, 4'b0010)
+                reg_write = 1;
+                writeback_type = WRITEBACK_MEM;
+                alu_source = REG_IMM;
+                imm_type = IMM_I;
+                case (func3) begin
+                    000: load_type = LOAD_BYTE;
+                    001: load_type = LOAD_HALF;
+                    010: load_type = LOAD_WORD;
+                    100: load_type = LOAD_BYTE_U;
+                    101: load_type = LOAD_HALF_U;
+                end
             end
             STORE: begin
-                reg_write = 0;
-                mem_read = 0;
-                mem_write = 1;
-                mem_to_reg = 0;
-                ALU_source = 1;
-                branch = 0;
-                ALU_op = 4'b0010;
-            end
-            JUMP: begin
-                reg_write = 0;
-                mem_read = 0;
-                mem_write = 1;
-                mem_to_reg = 0;
-                ALU_source = 0;
-                branch = 1;
-                ALU_op = 4'b0110;
+                alu_source = REG_IMM;
+                imm_type = IMM_S;
+                case (func3) begin
+                    000: store_type = STORE_BYTE;
+                    001: store_type = STORE_HALF;
+                    010: store_type = STORE_WORD;
+                end
             end
             R_TYPE: begin
                 reg_write = 1;
-                mem_read = 0;
-                mem_write = 0;
-                mem_to_reg = 0;
-                ALU_source = 1;
-                branch = 0;
-                ALU_op
+                writeback_type = WRITEBACK_ALU;
+                alu_source = REG_REG;
+                case (func7) begin
+                    7'b0000000: begin
+                        case (func3) begin
+                            000: alu_op = ALU_ADD;
+                            001: alu_op = ALU_SLL;
+                            010: alu_op = ALU_SLT;
+                            011: alu_op = ALU_SLTU;
+                            100: alu_op = ALU_XOR;
+                            101: alu_op = ALU_SRL;
+                            110: alu_op = ALU_OR;
+                            111: alu_op = ALU_AND;
+                        end
+                    end
+                    7'b0100000: begin
+                        case (func3) begin
+                            000: alu_op = ALU_SUB;
+                            101: alu_op = ALU_SRA;
+                        end
+                    end
+                end
             end
             I_TYPE: begin
-                
+                reg_write = 1;
+                writeback_type = WRITEBACK_ALU;
+                alu_source = REG_IMM;
+                imm_type = IMM_I;
+                case (func3) begin
+                    
+                end
             end
-            default: begin
-                reg_write = 0;
-                mem_read = 0;
-                mem_write = 0;
-                mem_to_reg = 0;
-                ALU_source = 0;
-                branch = 0;
-                ALU_op = 4'b0000;
+            JUMP: begin
+                
             end
         end
     end

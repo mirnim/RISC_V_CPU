@@ -1,16 +1,10 @@
-module instruction_fetch(
-    output logic [31:0] instruction,
-    input logic clk,
-    input logic [0:0] PCnext,
+module instruction_fetch( //COMBINATORIAL
     input logic [31:0] PC,
+    
+    output logic [31:0] instruction,
+    output logic [31:0] PC_plus_4
 );
-    logic [31:0] value;
-    instruction_memory imem (.value(value), .PC(PC));
-
-    always_ff @(posedge clk) begin
-        if (PCnext) begin
-            instruction <= value;
-        end
-    end
+    instruction_memory imem (.value(instruction), .PC(PC));
+    assign PC_plus_4 = PC + 4;
 
 endmodule
