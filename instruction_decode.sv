@@ -2,13 +2,13 @@ module instruction_decode( //COMBINATORIAL
     output logic reg_write,
     output logic jump,
 
-    output logic [2:0] load_type,
-    output logic [1:0] store_type,
-    output logic [2:0] writeback_type,
-    output logic [2:0] branch_type,
-    output logic [1:0] alu_source,
-    output logic [3:0] alu_op,
-    output logic [2:0] imm_type,
+    output load_type_enum load_type,
+    output store_type_enum store_type,
+    output writeback_type_enum writeback_type,
+    output branch_type_enum branch_type,
+    output alu_source_enum alu_source,
+    output alu_op_enum alu_op,
+    output imm_type_enum imm_type,
 
     output logic [4:0] rd,
     output logic [4:0] rs1,
@@ -33,7 +33,7 @@ module instruction_decode( //COMBINATORIAL
         WRITEBACK_MEM,
         WRITEBACK_PC4,
         WRITEBACK_IMM
-    } writeback_enum;
+    } writeback_type_enum;
 
     typedef enum logic [2:0] {
         LOAD_NONE,
