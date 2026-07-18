@@ -1,4 +1,4 @@
-module fetch_decode_reg( //SEQUENCIAL
+module if_id_reg( //SEQUENCIAL
     input logic clk,
     input logic rst,
     input logic stall,
@@ -15,9 +15,11 @@ module fetch_decode_reg( //SEQUENCIAL
     always_ff @(posedge clk) begin
         if (rst || flush) begin
             id_pc <= 0;
+            id_pc_plus_4 <= 0;
             id_instruction <= 0;
         end else if (!stall) begin
             id_pc <= if_pc;
+            id_pc_plus_4 <= if_pc_plus_4;
             id_instruction <= if_instruction;
         end
     end
