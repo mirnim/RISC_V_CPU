@@ -43,11 +43,15 @@ package constants;
         BRANCH_BGEU
     } branch_type_enum;
 
-    typedef enum logic [1:0] {
-        REG_REG,
-        REG_IMM,
-        PC_IMM
-    } alu_source_enum;
+    typedef enum logic [0:0] {
+        INPUT1_REG,
+        INPUT1_PC
+    } alu_source1_enum;
+
+    typedef enum logic [0:0] {
+        INPUT2_REG,
+        INPUT2_IMM
+    } alu_source2_enum;
 
     typedef enum logic [3:0] {
         ALU_ADD,

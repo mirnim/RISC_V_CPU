@@ -8,7 +8,8 @@ module instruction_decode( //COMBINATORIAL
     output store_type_enum store_type,
     output writeback_type_enum writeback_type,
     output branch_type_enum branch_type,
-    output alu_source_enum alu_source,
+    output alu_source1_enum alu_source1,
+    output alu_source2_enum alu_source2,
     output alu_op_enum alu_op,
     output imm_type_enum imm_type,
 
@@ -33,7 +34,8 @@ module instruction_decode( //COMBINATORIAL
         store_type = STORE_NONE;
         writeback_type = WRITEBACK_NONE;
         branch_type = BRANCH_NONE;
-        alu_source = REG_REG;
+        alu_source1 = INPUT1_REG;
+        alu_source2 = INPUT2_REG;
         alu_op = ALU_ADD;
         imm_type = IMM_NONE;
         
@@ -41,7 +43,8 @@ module instruction_decode( //COMBINATORIAL
             LOAD: begin
                 reg_write = 1;
                 writeback_type = WRITEBACK_MEM;
-                alu_source = REG_IMM;
+                alu_source1 = INPUT1_REG;
+                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_I;
                 case (func3)
                     3'b000: load_type = LOAD_BYTE;
@@ -52,7 +55,8 @@ module instruction_decode( //COMBINATORIAL
                 endcase
             end
             STORE: begin
-                alu_source = REG_IMM;
+                alu_source1 = INPUT1_REG;
+                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_S;
                 case (func3)
                     3'b000: store_type = STORE_BYTE;
@@ -63,7 +67,6 @@ module instruction_decode( //COMBINATORIAL
             R_TYPE: begin
                 reg_write = 1;
                 writeback_type = WRITEBACK_ALU;
-                alu_source = REG_REG;
                 case (func7)
                     7'b0000000: begin
                         case (func3)
@@ -88,7 +91,8 @@ module instruction_decode( //COMBINATORIAL
             I_TYPE: begin
                 reg_write = 1;
                 writeback_type = WRITEBACK_ALU;
-                alu_source = REG_IMM;
+                alu_source1 = INPUT1_REG;
+                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_I;
                 case (func3)
                     3'b000: alu_op = ALU_ADD;
@@ -119,7 +123,8 @@ module instruction_decode( //COMBINATORIAL
                 reg_write = 1;
                 jump = 1;
                 writeback_type = WRITEBACK_PC4;
-                alu_source = REG_IMM;
+                alu_source1 = INPUT1_REG;
+                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_I;
             end
             LUI: begin
@@ -130,14 +135,16 @@ module instruction_decode( //COMBINATORIAL
             AUIPC: begin
                 reg_write = 1;
                 writeback_type = WRITEBACK_ALU;
-                alu_source = PC_IMM;
+                alu_source1 = INPUT1_PC;
+                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_U;
             end
             JAL: begin
                 reg_write = 1;
                 jump = 1;
                 writeback_type = WRITEBACK_PC4;
-                alu_source = PC_IMM;
+                alu_source1 = INPUT1_PC;
+                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_J;
             end
         end
