@@ -6,4 +6,6 @@ module register_file(
     output logic [31:0] rs2_data
 );
 
+    logic [31:0] registers [0:31];
+    
 endmodule

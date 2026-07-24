@@ -40,7 +40,9 @@ package constants;
         BRANCH_BLT,
         BRANCH_BGE,
         BRANCH_BLTU,
-        BRANCH_BGEU
+        BRANCH_BGEU,
+        BRANCH_JAL,
+        BRANCH_JALR
     } branch_type_enum;
 
     typedef enum logic [0:0] {
@@ -54,6 +56,7 @@ package constants;
     } alu_source2_enum;
 
     typedef enum logic [3:0] {
+        ALU_NONE,
         ALU_ADD,
         ALU_SUB,
         ALU_AND,

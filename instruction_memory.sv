@@ -1,6 +1,6 @@
 module instruction_memory(
     output logic [31:0] value,
-    input logic [31:0] PC
+    input logic [31:0] pc
 );
     logic [31:0] mem [4095:0];
 
@@ -8,5 +8,5 @@ module instruction_memory(
         $readmemh("program.hex", mem);
     end
 
-    assign value = mem[(PC[13:2])];
+    assign value = mem[(pc[13:2])];
 endmodule

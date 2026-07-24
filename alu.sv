@@ -11,6 +11,7 @@ module alu(
     always_comb begin
         result = 32'b0;
         case (alu_op)
+        ALU_NONE: ;
         ALU_ADD: result = input1 + input2;
         ALU_SUB: result = input1 - input2;
         ALU_AND: result = input1 & input2;

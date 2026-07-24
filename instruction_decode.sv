@@ -2,7 +2,6 @@ import constants::*;
 
 module instruction_decode( //COMBINATORIAL
     output logic reg_write,
-    output logic jump,
 
     output load_type_enum load_type,
     output store_type_enum store_type,
@@ -110,6 +109,7 @@ module instruction_decode( //COMBINATORIAL
             end
             BRANCH: begin
                 imm_type = IMM_B;
+                alu_op = ALU_NONE;
                 case (func3)
                     3'b000: branch_type = BRANCH_BEQ;
                     3'b001: branch_type = BRANCH_BNE;
@@ -121,10 +121,9 @@ module instruction_decode( //COMBINATORIAL
             end
             JALR: begin
                 reg_write = 1;
-                jump = 1;
+                alu_op = ALU_NONE;
+                branch_type = BRANCH_JALR;
                 writeback_type = WRITEBACK_PC4;
-                alu_source1 = INPUT1_REG;
-                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_I;
             end
             LUI: begin
@@ -141,10 +140,9 @@ module instruction_decode( //COMBINATORIAL
             end
             JAL: begin
                 reg_write = 1;
-                jump = 1;
+                alu_op = ALU_NONE;
+                branch_type = BRANCH_JAL;
                 writeback_type = WRITEBACK_PC4;
-                alu_source1 = INPUT1_PC;
-                alu_source2 = INPUT2_IMM;
                 imm_type = IMM_J;
             end
         end
