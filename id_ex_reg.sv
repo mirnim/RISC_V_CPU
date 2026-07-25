@@ -1,6 +1,4 @@
-import constants::*;
-
-module id_ex_reg( //SEQUENCIAL
+module id_ex_reg import constants::*; ( //SEQUENCIAL
     input logic clk,
     input logic rst,
     input logic stall,

@@ -1,6 +1,4 @@
-include constants::imm_type;
-
-module immediate_generator(
+module immediate_generator include constants::imm_type; (
     input logic [31:0] instruction,
     input imm_type_enum imm_type,
     output logic [31:0] imm

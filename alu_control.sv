@@ -1,6 +1,4 @@
-import constants::alu_source_enum;
-
-module alu_control(
+module alu_control import constants::alu_source_enum; (
     input logic [31:0] pc,
     input logic [31:0] rs1,
     input logic [31:0] rs2,

@@ -1,6 +1,4 @@
-import constants::*;
-
-module alu(
+module alu import constants::*; (
     input alu_op_enum alu_op,
     input logic [31:0] input1,
     input logic [31:0] input2,
