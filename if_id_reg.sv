@@ -1,4 +1,4 @@
-module if_id_reg( //SEQUENCIAL
+module if_id_reg(
     input logic clk,
     input logic rst,
     input logic stall,

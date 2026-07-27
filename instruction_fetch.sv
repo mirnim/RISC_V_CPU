@@ -1,4 +1,4 @@
-module instruction_fetch( //COMBINATORIAL
+module instruction_fetch( 
     input logic [31:0] pc,
     
     output logic [31:0] instruction,

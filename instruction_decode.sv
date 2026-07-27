@@ -1,4 +1,4 @@
-module instruction_decode import constants::*; ( //COMBINATORIAL
+module instruction_decode import constants::*; ( 
     output logic reg_write,
 
     output load_type_enum load_type,
