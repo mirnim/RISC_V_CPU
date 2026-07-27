@@ -1,6 +1,4 @@
-import constants::writeback_type_enum;
-
-module mem_wb_reg(
+module mem_wb_reg import constants::writeback_type_enum; (
     input logic clk,
     input logic rst,
     input logic flush,

@@ -77,4 +77,11 @@ package constants;
         IMM_U,
         IMM_J
     } imm_type_enum;
+
+    typedef enum logic [1:0] {
+        FORWARD_NONE,
+        FORWARD_EX_MEM,
+        FORWARD_MEM_WB
+    } forward_type_enum;
+    
 endpackage;
