@@ -1,4 +1,6 @@
 module instruction_decode import constants::*; ( 
+    input logic [31:0] instruction,
+
     output logic reg_write,
 
     output load_type_enum load_type,
@@ -12,9 +14,7 @@ module instruction_decode import constants::*; (
 
     output logic [4:0] rd,
     output logic [4:0] rs1,
-    output logic [4:0] rs2,
-
-    input logic [31:0] instruction
+    output logic [4:0] rs2
 ); 
     
     wire [6:0] opcode = instruction[6:0];
