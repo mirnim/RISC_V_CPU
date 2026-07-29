@@ -1,8 +1,6 @@
 module ex_mem_reg import constants::*; (
     input logic clk,
     input logic rst,
-    input logic stall,
-    input logic flush,
 
     input logic [31:0] ex_alu_result,
     input logic [31:0] ex_rs2,
@@ -28,7 +26,7 @@ module ex_mem_reg import constants::*; (
 );
 
     always_ff @(posedge clk) begin
-        if (rst || flush) begin
+        if (rst) begin
             mem_alu_result <= 32'b0;
             mem_rs2 <= 32'b0;
             mem_rd <= 5'b0;
@@ -39,7 +37,7 @@ module ex_mem_reg import constants::*; (
             mem_writeback_type <= WRITEBACK_NONE;
             mem_load_type <= LOAD_NONE;
             mem_store_type <= STORE_NONE;
-        end else if (!stall) begin
+        end else begin
             mem_alu_result <= ex_alu_result;
             mem_rs2 <= ex_rs2;
             mem_rd <= ex_rd;
