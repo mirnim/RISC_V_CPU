@@ -5,7 +5,7 @@ module instruction_memory(
     logic [31:0] mem [4095:0];
 
     initial begin
-        $readmemh("program.hex", mem);
+        $readmemh("program_hex.txt", mem);
     end
 
     assign value = mem[(pc[13:2])];
