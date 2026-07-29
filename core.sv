@@ -369,6 +369,4 @@ module core import constants::*; (
         .write_data(wb_write_data)
     );
 
-
-
 endmodule
