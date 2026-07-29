@@ -12,10 +12,14 @@ module testbench();
     core risc_v(.clk(clk), .rst(rst));
     
     always @(posedge clk) begin
-        $display("time=%0t PC=%h INST=%h",
-                 $time,
-                 risc_v.if_pc,
-                 risc_v.if_instruction);
+        $display(
+            "x1=%d x2=%d x5=%d, x8=%d, x15 = %d",
+            risc_v.reg_file.registers[1],
+            risc_v.reg_file.registers[2],
+            risc_v.reg_file.registers[5],
+            risc_v.reg_file.registers[8],
+            risc_v.reg_file.registers[15]
+        );
     end
 
     initial begin

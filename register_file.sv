@@ -13,10 +13,25 @@ module register_file(
 );
 
     logic [31:0] registers [0:31];
-    
-    assign rs1_data = (rs1 == 5'd0) ? 32'b0 : registers[rs1];
-    assign rs2_data = (rs2 == 5'd0) ? 32'b0 : registers[rs2];
 
+    always_comb begin
+
+        if (rs1 == 5'd0)
+            rs1_data = 32'b0;
+        else if (reg_write && (rd == rs1) && (rd != 5'd0))
+            rs1_data = write_data;
+        else
+            rs1_data = registers[rs1];
+
+
+        if (rs2 == 5'd0)
+            rs2_data = 32'b0;
+        else if (reg_write && (rd == rs2) && (rd != 5'd0))
+            rs2_data = write_data;
+        else
+            rs2_data = registers[rs2];
+
+    end
     always_ff @(posedge clk) begin
         if (reg_write && (rd != 5'b0)) begin
             registers[rd] <= write_data;

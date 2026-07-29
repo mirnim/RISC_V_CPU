@@ -27,7 +27,7 @@ module forwarding_unit import constants::*; (
         end else if (wb_reg_write && (wb_rd != 5'b0) && (wb_rd == ex_rs2)) begin
             forward2 = FORWARD_MEM_WB;
         end
-
+    
     end
-
+    
 endmodule

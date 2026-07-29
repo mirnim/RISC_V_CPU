@@ -2,3 +2,5 @@
 *.vcd
 compiler_test.c
 *.o
+*.asm
+program_hex.txt
