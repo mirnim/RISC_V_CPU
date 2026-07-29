@@ -65,7 +65,7 @@ module id_ex_reg import constants::*; (
             ex_writeback_type <= WRITEBACK_NONE;
             ex_branch_type    <= BRANCH_NONE;
             ex_alu_source1     <= INPUT1_REG;
-            ex_alu_source1     <= INPUT2_REG;
+            ex_alu_source2     <= INPUT2_REG;
             ex_alu_op         <= ALU_ADD;
         end
         else begin

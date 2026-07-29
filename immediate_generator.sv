@@ -11,6 +11,7 @@ module immediate_generator import constants::*; (
             IMM_B: imm = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
             IMM_U: imm = {instruction[31:12], 12'b0};
             IMM_J: imm = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
+            default: ;
         endcase
     end
 endmodule

@@ -20,6 +20,7 @@ module alu import constants::*; (
         ALU_SRA: result = $signed(input1) >>> input2[4:0];
         ALU_SLT: result = ($signed(input1) < $signed(input2)) ? 32'b1 : 32'b0;
         ALU_SLTU: result = (input1 < input2) ? 32'b1 : 32'b0;
+        default: ;
         endcase
     end
 endmodule

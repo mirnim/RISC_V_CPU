@@ -25,6 +25,7 @@ module branch_unit import constants::*; (
                 take_branch = 1'b1;
                 branch_target = (rs1_data + imm) & 32'hFFFFFFFE;
             end
+            default: ;
         endcase
     end
 

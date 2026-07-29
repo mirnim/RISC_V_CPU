@@ -9,10 +9,13 @@ module forwarding_mux import constants::*; (
 );
 
     always_comb begin
+        forwarded_data = register_data;
+        
         case(forward_type)
             FORWARD_NONE: forwarded_data = register_data;
             FORWARD_EX_MEM: forwarded_data = mem_forward_data;
-            FORWARD_MEM_WB: forwarded_data = mem_wb_data;
+            FORWARD_MEM_WB: forwarded_data = wb_forward_data;
+            default: ;
         endcase
     end
 

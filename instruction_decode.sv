@@ -48,6 +48,7 @@ module instruction_decode import constants::*; (
                     3'b010: load_type = LOAD_WORD;
                     3'b100: load_type = LOAD_BYTE_U;
                     3'b101: load_type = LOAD_HALF_U;
+                    default: ;
                 endcase
             end
             STORE: begin
@@ -58,6 +59,7 @@ module instruction_decode import constants::*; (
                     3'b000: store_type = STORE_BYTE;
                     3'b001: store_type = STORE_HALF;
                     3'b010: store_type = STORE_WORD;
+                    default: ;
                 endcase
             end
             R_TYPE: begin
@@ -80,8 +82,10 @@ module instruction_decode import constants::*; (
                         case (funct3)
                             3'b000: alu_op = ALU_SUB;
                             3'b101: alu_op = ALU_SRA;
+                            default: ;
                         endcase
                     end
+                    default: ;
                 endcase
             end
             I_TYPE: begin
@@ -99,6 +103,7 @@ module instruction_decode import constants::*; (
                     3'b101: case (funct7)
                         7'b0000000: alu_op = ALU_SRL;
                         7'b0100000: alu_op = ALU_SRA;
+                        default: ;
                     endcase
                     3'b110: alu_op = ALU_OR;
                     3'b111: alu_op = ALU_AND;
@@ -114,6 +119,7 @@ module instruction_decode import constants::*; (
                     3'b101: branch_type = BRANCH_BGE;
                     3'b110: branch_type = BRANCH_BLTU;
                     3'b111: branch_type = BRANCH_BGEU;
+                    default: ;
                 endcase
             end
             JALR: begin
@@ -142,6 +148,7 @@ module instruction_decode import constants::*; (
                 writeback_type = WRITEBACK_PC4;
                 imm_type = IMM_J;
             end
+            default: ;
         endcase
     end
 endmodule

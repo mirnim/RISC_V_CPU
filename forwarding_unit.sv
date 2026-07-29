@@ -1,4 +1,4 @@
-module forwarding_unit import constants::forward_type_enum; (
+module forwarding_unit import constants::*; (
     input logic [4:0] ex_rs1,
     input logic [4:0] ex_rs2,
 

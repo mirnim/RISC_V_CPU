@@ -38,16 +38,21 @@ module load_store_unit import constants::*; (
         load_result = 32'b0;
 
         if (load_type != LOAD_NONE) begin
+            load_result = 32'b0;
             case (load_type)
                 LOAD_BYTE: load_result = {{24{selected_byte[7]}}, selected_byte};
                 LOAD_HALF: load_result = {{16{selected_half[15]}}, selected_half};
                 LOAD_WORD: if (address[1:0] == 2'b00) load_result = memory_read_data;
                 LOAD_BYTE_U: load_result = {24'b0, selected_byte};
                 LOAD_HALF_U: load_result = {16'b0, selected_half};
+                default: ;
             endcase
         end
         else if (store_type != STORE_NONE) begin
+            byte_enable = 4'b0000;
+            write_data = 32'b0;
             case (store_type)
+            
                 STORE_BYTE: begin
                     case (address[1:0])
                         2'b00: begin
@@ -87,6 +92,7 @@ module load_store_unit import constants::*; (
                         write_data = store_data;
                     end
                 end
+                default: ;
             endcase
         end
     end
