@@ -1,4 +1,4 @@
-module forwarding_mux import constants::forward_type_enum; (
+module forwarding_mux import constants::*; (
     input logic [31:0] register_data,
     input logic [31:0] mem_forward_data,
     input logic [31:0] wb_forward_data,

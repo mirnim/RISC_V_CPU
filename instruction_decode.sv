@@ -26,7 +26,6 @@ module instruction_decode import constants::*; (
     
     always_comb begin
         reg_write = 0;
-        jump = 0;
         load_type = LOAD_NONE;
         store_type = STORE_NONE;
         writeback_type = WRITEBACK_NONE;
@@ -43,7 +42,7 @@ module instruction_decode import constants::*; (
                 alu_source1 = INPUT1_REG;
                 alu_source2 = INPUT2_IMM;
                 imm_type = IMM_I;
-                case (func3)
+                case (funct3)
                     3'b000: load_type = LOAD_BYTE;
                     3'b001: load_type = LOAD_HALF;
                     3'b010: load_type = LOAD_WORD;
@@ -55,7 +54,7 @@ module instruction_decode import constants::*; (
                 alu_source1 = INPUT1_REG;
                 alu_source2 = INPUT2_IMM;
                 imm_type = IMM_S;
-                case (func3)
+                case (funct3)
                     3'b000: store_type = STORE_BYTE;
                     3'b001: store_type = STORE_HALF;
                     3'b010: store_type = STORE_WORD;
@@ -64,9 +63,9 @@ module instruction_decode import constants::*; (
             R_TYPE: begin
                 reg_write = 1;
                 writeback_type = WRITEBACK_ALU;
-                case (func7)
+                case (funct7)
                     7'b0000000: begin
-                        case (func3)
+                        case (funct3)
                             3'b000: alu_op = ALU_ADD;
                             3'b001: alu_op = ALU_SLL;
                             3'b010: alu_op = ALU_SLT;
@@ -78,7 +77,7 @@ module instruction_decode import constants::*; (
                         endcase
                     end
                     7'b0100000: begin
-                        case (func3)
+                        case (funct3)
                             3'b000: alu_op = ALU_SUB;
                             3'b101: alu_op = ALU_SRA;
                         endcase
@@ -91,13 +90,13 @@ module instruction_decode import constants::*; (
                 alu_source1 = INPUT1_REG;
                 alu_source2 = INPUT2_IMM;
                 imm_type = IMM_I;
-                case (func3)
+                case (funct3)
                     3'b000: alu_op = ALU_ADD;
                     3'b001: alu_op = ALU_SLL;
                     3'b010: alu_op = ALU_SLT;
                     3'b011: alu_op = ALU_SLTU;
                     3'b100: alu_op = ALU_XOR;
-                    3'b101: case (func7)
+                    3'b101: case (funct7)
                         7'b0000000: alu_op = ALU_SRL;
                         7'b0100000: alu_op = ALU_SRA;
                     endcase
@@ -108,7 +107,7 @@ module instruction_decode import constants::*; (
             BRANCH: begin
                 imm_type = IMM_B;
                 alu_op = ALU_NONE;
-                case (func3)
+                case (funct3)
                     3'b000: branch_type = BRANCH_BEQ;
                     3'b001: branch_type = BRANCH_BNE;
                     3'b100: branch_type = BRANCH_BLT;
@@ -143,6 +142,6 @@ module instruction_decode import constants::*; (
                 writeback_type = WRITEBACK_PC4;
                 imm_type = IMM_J;
             end
-        end
+        endcase
     end
 endmodule

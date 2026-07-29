@@ -1,4 +1,4 @@
-module mem_wb_reg import constants::writeback_type_enum; (
+module mem_wb_reg import constants::*; (
     input logic clk,
     input logic rst,
 

@@ -1,4 +1,4 @@
-module hazard_unit import constants::load_type_enum; (
+module hazard_unit import constants::*; (
     input load_type_enum ex_load_type,
     input logic [4:0] ex_rd,
     input logic [4:0] id_rs1,

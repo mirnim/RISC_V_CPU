@@ -20,8 +20,8 @@ module id_ex_reg import constants::*; (
     input store_type_enum id_store_type,
     input writeback_type_enum id_writeback_type,
     input branch_type_enum id_branch_type,
-    input alu_source_enum id_alu_source1,
-    input alu_source_enum id_alu_source2,
+    input alu_source1_enum id_alu_source1,
+    input alu_source2_enum id_alu_source2,
     input alu_op_enum id_alu_op,
 
     output logic [31:0] ex_pc,
@@ -41,8 +41,8 @@ module id_ex_reg import constants::*; (
     output store_type_enum ex_store_type,
     output writeback_type_enum ex_writeback_type,
     output branch_type_enum ex_branch_type,
-    output alu_source_enum ex_alu_source1,
-    output alu_source_enum ex_alu_source2,
+    output alu_source1_enum ex_alu_source1,
+    output alu_source2_enum ex_alu_source2,
     output alu_op_enum ex_alu_op
 );
 

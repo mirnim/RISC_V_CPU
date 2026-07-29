@@ -1,4 +1,4 @@
-module writeback_unit import constants::writeback_type_enum; (
+module writeback_unit import constants::*; (
     input logic [31:0] alu_result,
     input logic [31:0] load_result,
     input logic [31:0] pc_plus_4,

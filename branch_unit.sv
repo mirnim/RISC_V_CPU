@@ -1,4 +1,4 @@
-module branch_unit import constants::branch_type_enum; (
+module branch_unit import constants::*; (
     input branch_type_enum branch_type,
     input logic [31:0] pc,
     input logic [31:0] rs1_data,

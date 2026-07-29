@@ -33,7 +33,7 @@ package constants;
         STORE_WORD
     } store_type_enum;
 
-    typedef enum logic [2:0] {
+    typedef enum logic [3:0] {
         BRANCH_NONE,
         BRANCH_BEQ,
         BRANCH_BNE,
@@ -84,4 +84,4 @@ package constants;
         FORWARD_MEM_WB
     } forward_type_enum;
     
-endpackage;
+endpackage
