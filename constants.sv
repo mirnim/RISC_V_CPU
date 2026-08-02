@@ -55,7 +55,7 @@ package constants;
         INPUT2_IMM
     } alu_source2_enum;
 
-    typedef enum logic [3:0] {
+    typedef enum logic [5:0] {
         ALU_NONE,
         ALU_ADD,
         ALU_SUB,
@@ -66,7 +66,39 @@ package constants;
         ALU_SRL, //Shift right logical
         ALU_SRA, //Shift right arithmetic (keeps sign bit)
         ALU_SLT, //Set less than (1 if A<B else 0)
-        ALU_SLTU //SLT but with unsigned
+        ALU_SLTU, //SLT but with unsigned
+        //ZBA extension
+        ALU_SH1ADD,
+        ALU_SH2ADD,
+        ALU_SH3ADD,
+        //ZBB extension
+        ALU_ANDN,
+        ALU_ORN,
+        ALU_XNOR,
+        ALU_CLZ,
+        ALU_CTZ,
+        ALU_CPOP,
+        ALU_MAX,
+        ALU_MAXU,
+        ALU_MIN,
+        ALU_MINU,
+        ALU_SEXT_B,
+        ALU_SEXT_H,
+        ALU_ZEXT_H,
+        ALU_ROL,
+        ALU_ROR,
+        ALU_RORI,
+        ALU_ORC_B,
+        ALU_REV8,
+        //ZBS extension
+        ALU_BCLR,
+        ALU_BCLRI,
+        ALU_BEXT,
+        ALU_BEXTI,
+        ALU_BINV,
+        ALU_BINVI,
+        ALU_BSET,
+        ALU_BSETI
     } alu_op_enum;
 
     typedef enum logic [2:0] {
