@@ -1,6 +1,9 @@
 /obj_dir
 *.vcd
-compiler_test.c
+*.c
+*.s
+*.i
 *.o
 *.asm
+*.out
 program_hex.txt
