@@ -4,6 +4,7 @@
 *.s
 *.i
 *.o
+*.py
 *.asm
 *.out
 *.png
