@@ -1,1824 +1,1617 @@
-	.attribute	4, 16
-	.attribute	5, "rv32i2p1_b1p0_zba1p0_zbb1p0_zbc1p0_zbkc1p0_zbs1p0"
 	.file	"compiler_test.c"
+	.option nopic
+	.attribute arch, "rv32i2p1_b1p0_zba1p0_zbb1p0_zbs1p0"
+	.attribute unaligned_access, 0
+	.attribute stack_align, 16
 	.text
-	.globl	fillInBuf                       # -- Begin function fillInBuf
-	.p2align	2
-	.type	fillInBuf,@function
-fillInBuf:                              # @fillInBuf
-# %bb.0:
-	addi	sp, sp, -16
-	sw	ra, 12(sp)                      # 4-byte Folded Spill
-	lui	a0, %hi(.L_MergedGlobals)
-	addi	a0, a0, %lo(.L_MergedGlobals)
-	lw	a4, 8(a0)
-	lw	a3, 12(a0)
-	li	a1, 4
-	sh	a1, 0(a0)
-	addi	a2, a0, 1
-	addi	a0, a0, 20
-	li	a1, 252
-	jalr	a4
-	beqz	a0, .LBB0_2
-# %bb.1:
-	lui	a1, %hi(.L_MergedGlobals)
-	sb	a0, %lo(.L_MergedGlobals+2)(a1)
-.LBB0_2:
-	lw	ra, 12(sp)                      # 4-byte Folded Reload
-	addi	sp, sp, 16
+	.align	2
+	.globl	decode_unary
+	.type	decode_unary, @function
+decode_unary:
+	mv	a7,a0
+	li	a4,0
+	li	a3,0
+	li	a2,7
+	li	a0,0
+	add	a5,a7,a3
+	sub	a6,a2,a4
+	bleu	a1,a3,.L3
+.L11:
+	lbu	a5,0(a5)
+	bext	a5,a5,a6
+	beq	a4,a2,.L4
+	addi	a4,a4,1
+	bne	a5,zero,.L9
+.L12:
+	addi	a0,a0,1
+	add	a5,a7,a3
+	sub	a6,a2,a4
+	bgtu	a1,a3,.L11
+.L3:
+	j	.L3
+.L4:
+	addi	a3,a3,1
+	li	a4,0
+	beq	a5,zero,.L12
+.L9:
 	ret
-.Lfunc_end0:
-	.size	fillInBuf, .Lfunc_end0-fillInBuf
-                                        # -- End function
-	.globl	getChar                         # -- Begin function getChar
-	.p2align	2
-	.type	getChar,@function
-getChar:                                # @getChar
-# %bb.0:
-	addi	sp, sp, -16
-	sw	ra, 12(sp)                      # 4-byte Folded Spill
-	sw	s0, 8(sp)                       # 4-byte Folded Spill
-	lui	a0, %hi(.L_MergedGlobals)
-	lbu	a0, %lo(.L_MergedGlobals+1)(a0)
-	lui	s0, %hi(.L_MergedGlobals)
-	addi	s0, s0, %lo(.L_MergedGlobals)
-	bnez	a0, .LBB1_4
-# %bb.1:
-	lw	a4, 8(s0)
-	lw	a3, 12(s0)
-	li	a0, 4
-	sb	a0, 0(s0)
-	addi	a0, s0, 20
-	addi	a2, s0, 1
-	li	a1, 252
-	jalr	a4
-	beqz	a0, .LBB1_3
-# %bb.2:
-	lui	a1, %hi(.L_MergedGlobals)
-	sb	a0, %lo(.L_MergedGlobals+2)(a1)
-.LBB1_3:
-	lui	a1, %hi(.L_MergedGlobals)
-	lbu	a0, %lo(.L_MergedGlobals+1)(a1)
-	beqz	a0, .LBB1_5
-.LBB1_4:
-	lbu	a2, 0(s0)
-	add	a1, s0, a2
-	lbu	a1, 16(a1)
-	addi	a0, a0, -1
-	addi	a2, a2, 1
-	sb	a2, 0(s0)
-	sb	a0, 1(s0)
-	zext.b	a0, a1
-	lw	ra, 12(sp)                      # 4-byte Folded Reload
-	lw	s0, 8(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 16
+	.size	decode_unary, .-decode_unary
+	.align	2
+	.globl	decode_unary_fast
+	.type	decode_unary_fast, @function
+decode_unary_fast:
+	clz	a0,a0
 	ret
-.LBB1_5:
-	lbu	a0, %lo(.L_MergedGlobals+3)(a1)
-	addi	a2, a0, -255
-	seqz	a2, a2
-	not	a0, a0
-	addi	a2, a2, -1
-	sb	a0, %lo(.L_MergedGlobals+3)(a1)
-	ori	a1, a2, -39
-	zext.b	a0, a1
-	lw	ra, 12(sp)                      # 4-byte Folded Reload
-	lw	s0, 8(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 16
+	.size	decode_unary_fast, .-decode_unary_fast
+	.align	2
+	.globl	decode_elias_gamma
+	.type	decode_elias_gamma, @function
+decode_elias_gamma:
+	li	a5,0
+	li	a4,0
+	li	a2,7
+	li	a7,0
+	add	a3,a0,a4
+	sub	a6,a2,a5
+	bleu	a1,a4,.L16
+.L31:
+	lbu	a3,0(a3)
+	bext	a3,a3,a6
+	beq	a5,a2,.L17
+	addi	a5,a5,1
+	bne	a3,zero,.L30
+.L19:
+	addi	a7,a7,1
+	add	a3,a0,a4
+	sub	a6,a2,a5
+	bgtu	a1,a4,.L31
+.L16:
+	j	.L16
+.L17:
+	addi	a4,a4,1
+	li	a5,0
+	beq	a3,zero,.L19
+.L30:
+	beq	a7,zero,.L25
+	li	a2,0
+	li	a3,1
+	li	t4,7
+	li	t3,8
+.L24:
+	sub	t1,t4,a5
+	add	a6,a0,a4
+	addi	a5,a5,1
+	slli	a3,a3,1
+	bleu	a1,a4,.L21
+	lbu	a6,0(a6)
+	bext	a6,a6,t1
+	or	a3,a3,a6
+	bne	a5,t3,.L22
+	addi	a4,a4,1
+	li	a5,0
+.L22:
+	addi	a2,a2,1
+	bne	a7,a2,.L24
+.L14:
+	mv	a0,a3
 	ret
-.Lfunc_end1:
-	.size	getChar, .Lfunc_end1-getChar
-                                        # -- End function
-	.globl	stuffChar                       # -- Begin function stuffChar
-	.p2align	2
-	.type	stuffChar,@function
-stuffChar:                              # @stuffChar
-# %bb.0:
-	lui	a1, %hi(.L_MergedGlobals)
-	addi	a1, a1, %lo(.L_MergedGlobals)
-	lbu	a2, 0(a1)
-	lbu	a3, 1(a1)
-	addi	a2, a2, -1
-	zext.b	a4, a2
-	add	a4, a1, a4
-	addi	a3, a3, 1
-	sb	a2, 0(a1)
-	sb	a3, 1(a1)
-	sb	a0, 16(a4)
+.L25:
+	li	a3,1
+	mv	a0,a3
 	ret
-.Lfunc_end2:
-	.size	stuffChar, .Lfunc_end2-stuffChar
-                                        # -- End function
-	.globl	getOctet                        # -- Begin function getOctet
-	.p2align	2
-	.type	getOctet,@function
-getOctet:                               # @getOctet
-# %bb.0:
-	addi	sp, sp, -16
-	sw	ra, 12(sp)                      # 4-byte Folded Spill
-	sw	s0, 8(sp)                       # 4-byte Folded Spill
-	sw	s1, 4(sp)                       # 4-byte Folded Spill
-	mv	s0, a0
-	lui	a0, %hi(.L_MergedGlobals)
-	lbu	a1, %lo(.L_MergedGlobals+1)(a0)
-	lui	s1, %hi(.L_MergedGlobals)
-	addi	s1, s1, %lo(.L_MergedGlobals)
-	bnez	a1, .LBB3_4
-# %bb.1:
-	lw	a4, 8(s1)
-	lw	a3, 12(s1)
-	li	a0, 4
-	sb	a0, 0(s1)
-	addi	a0, s1, 20
-	addi	a2, s1, 1
-	li	a1, 252
-	jalr	a4
-	beqz	a0, .LBB3_3
-# %bb.2:
-	lui	a1, %hi(.L_MergedGlobals)
-	sb	a0, %lo(.L_MergedGlobals+2)(a1)
-.LBB3_3:
-	lui	a2, %hi(.L_MergedGlobals)
-	lbu	a1, %lo(.L_MergedGlobals+1)(a2)
-	beqz	a1, .LBB3_8
-.LBB3_4:
-	lbu	a2, 0(s1)
-	add	a0, s1, a2
-	lbu	a0, 16(a0)
-	addi	a1, a1, -1
-	addi	a2, a2, 1
-	sb	a2, 0(s1)
-	sb	a1, 1(s1)
-	beqz	s0, .LBB3_16
-# %bb.5:
-	li	a2, 255
-	bne	a0, a2, .LBB3_16
-# %bb.6:
-	zext.b	a0, a1
-	beqz	a0, .LBB3_11
-# %bb.7:
-	lui	a0, %hi(.L_MergedGlobals)
-	lbu	a0, %lo(.L_MergedGlobals)(a0)
-	j	.LBB3_14
-.LBB3_8:
-	lbu	a3, %lo(.L_MergedGlobals+3)(a2)
-	not	a1, a3
-	addi	a4, a3, -255
-	li	a0, 255
-	sb	a1, %lo(.L_MergedGlobals+3)(a2)
-	snez	a1, a4
-	bne	a3, a0, .LBB3_10
-# %bb.9:
-	li	a0, 217
-.LBB3_10:
-	snez	a2, s0
-	and	a1, a2, a1
-	beqz	a1, .LBB3_16
-.LBB3_11:
-	lw	a4, 8(s1)
-	lw	a3, 12(s1)
-	li	a0, 4
-	sb	a0, 0(s1)
-	addi	a0, s1, 20
-	addi	a2, s1, 1
-	li	a1, 252
-	jalr	a4
-	beqz	a0, .LBB3_13
-# %bb.12:
-	lui	a1, %hi(.L_MergedGlobals)
-	sb	a0, %lo(.L_MergedGlobals+2)(a1)
-.LBB3_13:
-	lui	a2, %hi(.L_MergedGlobals)
-	lbu	a1, %lo(.L_MergedGlobals+1)(a2)
-	lbu	a0, %lo(.L_MergedGlobals)(a2)
-	beqz	a1, .LBB3_17
-.LBB3_14:
-	add	a2, s1, a0
-	lbu	a2, 16(a2)
-	addi	a0, a0, 1
-	addi	a1, a1, -1
-	sb	a0, 0(s1)
-	sb	a1, 1(s1)
-	bnez	a2, .LBB3_18
-# %bb.15:
-	li	a0, 255
-.LBB3_16:
-	lw	ra, 12(sp)                      # 4-byte Folded Reload
-	lw	s0, 8(sp)                       # 4-byte Folded Reload
-	lw	s1, 4(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 16
+.L21:
+	addi	a2,a2,1
+	beq	a7,a2,.L14
+.L23:
+	addi	a2,a2,1
+	slli	a3,a3,1
+	bgtu	a7,a2,.L23
+	mv	a0,a3
 	ret
-.LBB3_17:
-	lbu	a3, %lo(.L_MergedGlobals+3)(a2)
-	addi	a4, a3, -255
-	seqz	a4, a4
-	not	a3, a3
-	addi	a4, a4, -1
-	sb	a3, %lo(.L_MergedGlobals+3)(a2)
-	ori	a2, a4, -39
-.LBB3_18:
-	addi	a3, a0, -1
-	addi	a4, a0, -2
-	zext.b	a0, a3
-	zext.b	a3, a4
-	add	a5, s1, a0
-	add	a3, s1, a3
-	li	a0, 255
-	addi	a1, a1, 2
-	sb	a2, 16(a5)
-	sb	a0, 16(a3)
-	sb	a4, 0(s1)
-	sb	a1, 1(s1)
-	lw	ra, 12(sp)                      # 4-byte Folded Reload
-	lw	s0, 8(sp)                       # 4-byte Folded Reload
-	lw	s1, 4(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 16
+	.size	decode_elias_gamma, .-decode_elias_gamma
+	.align	2
+	.globl	decode_elias_gamma_fast
+	.type	decode_elias_gamma_fast, @function
+decode_elias_gamma_fast:
+	beq	a1,zero,.L49
+	li	a3,1
+	lbu	a4,0(a0)
+	li	a5,0
+	beq	a1,a3,.L50
+	lbu	a2,1(a0)
+	srli	a5,a4,24
+	li	a3,2
+	slli	a4,a4,8
+	or	a4,a4,a2
+	beq	a1,a3,.L51
+	lbu	a5,2(a0)
+	slli	a4,a4,8
+	li	a3,3
+	or	a4,a4,a5
+	li	a5,0
+	beq	a1,a3,.L52
+	lbu	a3,3(a0)
+	slli	a5,a4,8
+	li	a2,4
+	or	a5,a5,a3
+	srli	a3,a4,24
+	beq	a1,a2,.L63
+	lbu	a2,4(a0)
+	srli	a6,a5,24
+	slli	a3,a3,8
+	slli	a5,a5,8
+	li	a4,5
+	add	a3,a6,a3
+	or	a5,a5,a2
+	beq	a1,a4,.L64
+	lbu	a2,5(a0)
+	srli	a6,a5,24
+	slli	a3,a3,8
+	slli	a5,a5,8
+	li	a4,6
+	add	a3,a6,a3
+	or	a5,a5,a2
+	beq	a1,a4,.L65
+	lbu	a2,6(a0)
+	srli	a6,a5,24
+	slli	a3,a3,8
+	slli	a5,a5,8
+	li	a4,7
+	add	a3,a6,a3
+	or	a5,a5,a2
+	beq	a1,a4,.L66
+	srli	a4,a5,24
+	slli	a3,a3,8
+	add	a3,a4,a3
+	lbu	a1,7(a0)
+	clz	a6,a3
+	li	a2,63
+	sub	a2,a2,a6
+	slli	a5,a5,8
+	addi	a4,a2,-32
+	or	a5,a5,a1
+	blt	a4,zero,.L45
+	li	a0,-1
+	sll	a0,a0,a4
+	li	a4,0
+.L46:
+	andn	a4,a5,a4
+	andn	a5,a3,a0
+.L56:
+	sub	a3,a2,a6
+	addi	a2,a3,-32
+	srl	a0,a5,a2
+	bge	a2,zero,.L59
+	li	a2,31
+	slli	a5,a5,1
+	sub	a2,a2,a3
+	srl	a0,a4,a3
+	sll	a5,a5,a2
+	add	a0,a5,a0
+.L59:
+	bset	a0,a0,a6
 	ret
-.Lfunc_end3:
-	.size	getOctet, .Lfunc_end3-getOctet
-                                        # -- End function
-	.globl	getBits                         # -- Begin function getBits
-	.p2align	2
-	.type	getBits,@function
-getBits:                                # @getBits
-# %bb.0:
-	addi	sp, sp, -32
-	sw	ra, 28(sp)                      # 4-byte Folded Spill
-	sw	s0, 24(sp)                      # 4-byte Folded Spill
-	sw	s1, 20(sp)                      # 4-byte Folded Spill
-	sw	s2, 16(sp)                      # 4-byte Folded Spill
-	sw	s3, 12(sp)                      # 4-byte Folded Spill
-	sw	s4, 8(sp)                       # 4-byte Folded Spill
-	sw	s5, 4(sp)                       # 4-byte Folded Spill
-	sw	s6, 0(sp)                       # 4-byte Folded Spill
-	mv	s0, a0
-	lui	s2, %hi(.L_MergedGlobals)
-	addi	s2, s2, %lo(.L_MergedGlobals)
-	lbu	a2, 4(s2)
-	lhu	s5, 6(s2)
-	li	a0, 9
-	mv	s1, a1
-	bltu	s0, a0, .LBB4_3
-# %bb.1:
-	sll	a0, s5, a2
-	addi	s3, s0, -8
-	sh	a0, 6(s2)
-	mv	a0, s1
-	call	getOctet
-	lbu	a2, 4(s2)
-	lhu	a1, 6(s2)
-	li	a3, 8
-	or	a0, a1, a0
-	sub	a3, a3, a2
-	sll	a0, a0, a3
-	slli	a1, a0, 16
-	andi	a3, s5, -256
-	srli	a1, a1, 24
-	or	s4, a1, a3
-	zext.b	s6, s3
-	zext.h	a0, a0
-	bltu	a2, s6, .LBB4_4
-.LBB4_2:
-	sub	a2, a2, s3
-	sll	a1, a0, s6
-	j	.LBB4_5
-.LBB4_3:
-	mv	s3, s0
-	mv	s4, s5
-	zext.b	s6, s0
-	zext.h	a0, s5
-	bgeu	a2, s6, .LBB4_2
-.LBB4_4:
-	sll	a0, a0, a2
-	sh	a0, 6(s2)
-	mv	a0, s1
-	call	getOctet
-	lhu	a1, 6(s2)
-	lbu	a2, 4(s2)
-	or	a0, a1, a0
-	sub	a1, s6, a2
-	sub	a2, a2, s3
-	sll	a1, a0, a1
-	addi	a2, a2, 8
-.LBB4_5:
-	li	a0, 16
-	sub	a0, a0, s0
-	srl	a0, s4, a0
-	sb	a2, 4(s2)
-	sh	a1, 6(s2)
-	lw	ra, 28(sp)                      # 4-byte Folded Reload
-	lw	s0, 24(sp)                      # 4-byte Folded Reload
-	lw	s1, 20(sp)                      # 4-byte Folded Reload
-	lw	s2, 16(sp)                      # 4-byte Folded Reload
-	lw	s3, 12(sp)                      # 4-byte Folded Reload
-	lw	s4, 8(sp)                       # 4-byte Folded Reload
-	lw	s5, 4(sp)                       # 4-byte Folded Reload
-	lw	s6, 0(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 32
+.L45:
+	li	a4,31
+	li	a1,-2147483648
+	sub	a4,a4,a2
+	addi	a1,a1,-1
+	srl	a1,a1,a4
+	li	a4,-1
+	sll	a0,a4,a2
+	add	a0,a1,a0
+	sll	a4,a4,a2
+	j	.L46
+.L63:
+	clz	a6,a5
+	li	a4,31
+	bne	a6,a4,.L67
+	li	a2,0
+	li	a4,0
+	li	a5,0
+	j	.L56
+.L49:
+	li	a6,32
+	li	a2,-33
+	li	a4,0
+	li	a5,0
+	j	.L56
+.L50:
+	li	a6,32
+	li	a2,-25
+	j	.L56
+.L51:
+	li	a6,32
+	li	a2,-17
+	j	.L56
+.L52:
+	li	a6,32
+	li	a2,-9
+	j	.L56
+.L64:
+	slli	a4,a3,24
+	srli	a6,a5,8
+	add	a6,a4,a6
+	clz	a6,a6
+	li	a2,39
+	sub	a2,a2,a6
+	addi	a4,a2,-32
+	blt	a4,zero,.L43
+.L62:
+	li	a1,-1
+	sll	a1,a1,a4
+	li	a4,0
+.L44:
+	andn	a4,a5,a4
+	andn	a5,a3,a1
+	j	.L56
+.L65:
+	slli	a4,a3,16
+	srli	a6,a5,16
+	add	a6,a4,a6
+	clz	a6,a6
+	li	a2,47
+	sub	a2,a2,a6
+	addi	a4,a2,-32
+	bge	a4,zero,.L62
+.L43:
+	li	a4,31
+	li	a0,-2147483648
+	sub	a4,a4,a2
+	addi	a0,a0,-1
+	srl	a0,a0,a4
+	li	a4,-1
+	sll	a1,a4,a2
+	add	a1,a0,a1
+	sll	a4,a4,a2
+	j	.L44
+.L66:
+	slli	a4,a3,8
+	srli	a6,a5,24
+	add	a6,a4,a6
+	clz	a6,a6
+	li	a2,55
+	sub	a2,a2,a6
+	addi	a4,a2,-32
+	bge	a4,zero,.L62
+	j	.L43
+.L67:
+	li	a2,31
+	addi	sp,sp,-32
+	sub	a2,a2,a6
+	li	a0,-1
+	li	a1,-1
+	sw	a3,12(sp)
+	sw	a5,8(sp)
+	sw	a6,4(sp)
+	sw	a2,0(sp)
+	sw	ra,28(sp)
+	call	__ashldi3
+	lw	a5,8(sp)
+	lw	a3,12(sp)
+	lw	a2,0(sp)
+	lw	a6,4(sp)
+	andn	a4,a5,a0
+	andn	a5,a3,a1
+	sub	a3,a2,a6
+	addi	a2,a3,-32
+	srl	a0,a5,a2
+	bge	a2,zero,.L48
+	li	a2,31
+	slli	a5,a5,1
+	sub	a2,a2,a3
+	srl	a0,a4,a3
+	sll	a5,a5,a2
+	add	a0,a5,a0
+.L48:
+	lw	ra,28(sp)
+	bset	a0,a0,a6
+	addi	sp,sp,32
+	jr	ra
+	.size	decode_elias_gamma_fast, .-decode_elias_gamma_fast
+	.align	2
+	.globl	decode_elias_delta
+	.type	decode_elias_delta, @function
+decode_elias_delta:
+	li	a5,0
+	li	a4,0
+	li	a2,7
+	li	a7,0
+	add	a3,a0,a4
+	sub	a6,a2,a5
+	bleu	a1,a4,.L70
+.L97:
+	lbu	a3,0(a3)
+	bext	a3,a3,a6
+	beq	a5,a2,.L71
+	addi	a5,a5,1
+	bne	a3,zero,.L96
+.L73:
+	addi	a7,a7,1
+	add	a3,a0,a4
+	sub	a6,a2,a5
+	bgtu	a1,a4,.L97
+.L70:
+	j	.L70
+.L71:
+	addi	a4,a4,1
+	li	a5,0
+	beq	a3,zero,.L73
+.L96:
+	beq	a7,zero,.L74
+	li	a2,0
+	li	a3,1
+	li	t4,7
+	li	t3,8
+.L84:
+	add	a6,a0,a4
+	sub	t1,t4,a5
+	slli	a3,a3,1
+	bleu	a1,a4,.L75
+	lbu	a6,0(a6)
+	addi	a5,a5,1
+	bext	a6,a6,t1
+	or	a3,a3,a6
+	bne	a5,t3,.L76
+	addi	a4,a4,1
+	li	a5,0
+.L76:
+	addi	a2,a2,1
+	bne	a2,a7,.L84
+.L77:
+	li	a6,1
+	mv	a2,a6
+	li	t4,7
+	li	t3,8
+	bleu	a3,a6,.L74
+.L79:
+	sub	t1,t4,a5
+	add	a7,a0,a4
+	addi	a5,a5,1
+	slli	a2,a2,1
+	bleu	a1,a4,.L81
+	lbu	a7,0(a7)
+	bext	a7,a7,t1
+	or	a2,a2,a7
+	bne	a5,t3,.L82
+	addi	a4,a4,1
+	li	a5,0
+.L82:
+	addi	a6,a6,1
+	bne	a3,a6,.L79
+.L68:
+	mv	a0,a2
 	ret
-.Lfunc_end4:
-	.size	getBits, .Lfunc_end4-getBits
-                                        # -- End function
-	.globl	getBits1                        # -- Begin function getBits1
-	.p2align	2
-	.type	getBits1,@function
-getBits1:                               # @getBits1
-# %bb.0:
-	addi	sp, sp, -32
-	sw	ra, 28(sp)                      # 4-byte Folded Spill
-	sw	s0, 24(sp)                      # 4-byte Folded Spill
-	sw	s1, 20(sp)                      # 4-byte Folded Spill
-	sw	s2, 16(sp)                      # 4-byte Folded Spill
-	sw	s3, 12(sp)                      # 4-byte Folded Spill
-	sw	s4, 8(sp)                       # 4-byte Folded Spill
-	sw	s5, 4(sp)                       # 4-byte Folded Spill
-	mv	s0, a0
-	lui	s1, %hi(.L_MergedGlobals)
-	addi	s1, s1, %lo(.L_MergedGlobals)
-	lbu	a0, 4(s1)
-	lhu	s3, 6(s1)
-	li	a1, 9
-	bltu	s0, a1, .LBB5_8
-# %bb.1:
-	lbu	a1, 1(s1)
-	sll	a0, s3, a0
-	sh	a0, 6(s1)
-	bnez	a1, .LBB5_5
-# %bb.2:
-	lw	a4, 8(s1)
-	lw	a3, 12(s1)
-	li	a0, 4
-	sb	a0, 0(s1)
-	addi	a0, s1, 20
-	addi	a2, s1, 1
-	li	a1, 252
-	jalr	a4
-	beqz	a0, .LBB5_4
-# %bb.3:
-	lui	a1, %hi(.L_MergedGlobals)
-	sb	a0, %lo(.L_MergedGlobals+2)(a1)
-.LBB5_4:
-	lui	a0, %hi(.L_MergedGlobals)
-	lbu	a1, %lo(.L_MergedGlobals+1)(a0)
-	beqz	a1, .LBB5_16
-.LBB5_5:
-	lbu	a0, 0(s1)
-	add	a2, s1, a0
-	lbu	a2, 16(a2)
-	addi	a1, a1, -1
-	addi	a0, a0, 1
-	sb	a0, 0(s1)
-	sb	a1, 1(s1)
-.LBB5_6:
-	lbu	a0, 4(s1)
-	lhu	a1, 6(s1)
-	zext.b	a2, a2
-	li	a3, 8
-	or	a1, a1, a2
-	sub	a3, a3, a0
-	sll	a1, a1, a3
-	andi	a2, s3, -256
-	slli	a3, a1, 16
-	addi	s4, s0, -8
-	srli	a3, a3, 24
-	or	s2, a3, a2
-	zext.b	s5, s4
-	zext.h	a3, a1
-	bltu	a0, s5, .LBB5_9
-.LBB5_7:
-	sub	a2, a0, s4
-	sll	a1, a3, s5
-	j	.LBB5_15
-.LBB5_8:
-	mv	s4, s0
-	mv	s2, s3
-	zext.b	s5, s0
-	zext.h	a3, s3
-	bgeu	a0, s5, .LBB5_7
-.LBB5_9:
-	lbu	a1, 1(s1)
-	sll	a0, a3, a0
-	sh	a0, 6(s1)
-	bnez	a1, .LBB5_13
-# %bb.10:
-	lw	a4, 8(s1)
-	lw	a3, 12(s1)
-	li	a0, 4
-	sb	a0, 0(s1)
-	addi	a0, s1, 20
-	addi	a2, s1, 1
-	li	a1, 252
-	jalr	a4
-	beqz	a0, .LBB5_12
-# %bb.11:
-	lui	a1, %hi(.L_MergedGlobals)
-	sb	a0, %lo(.L_MergedGlobals+2)(a1)
-.LBB5_12:
-	lui	a0, %hi(.L_MergedGlobals)
-	lbu	a1, %lo(.L_MergedGlobals+1)(a0)
-	beqz	a1, .LBB5_17
-.LBB5_13:
-	lbu	a2, 0(s1)
-	add	a0, s1, a2
-	lbu	a0, 16(a0)
-	addi	a1, a1, -1
-	addi	a2, a2, 1
-	sb	a2, 0(s1)
-	sb	a1, 1(s1)
-.LBB5_14:
-	lhu	a1, 6(s1)
-	lbu	a2, 4(s1)
-	zext.b	a0, a0
-	or	a0, a1, a0
-	sub	a1, s5, a2
-	sub	a2, a2, s4
-	sll	a1, a0, a1
-	addi	a2, a2, 8
-.LBB5_15:
-	li	a0, 16
-	sub	a0, a0, s0
-	srl	a0, s2, a0
-	sb	a2, 4(s1)
-	sh	a1, 6(s1)
-	lw	ra, 28(sp)                      # 4-byte Folded Reload
-	lw	s0, 24(sp)                      # 4-byte Folded Reload
-	lw	s1, 20(sp)                      # 4-byte Folded Reload
-	lw	s2, 16(sp)                      # 4-byte Folded Reload
-	lw	s3, 12(sp)                      # 4-byte Folded Reload
-	lw	s4, 8(sp)                       # 4-byte Folded Reload
-	lw	s5, 4(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 32
+.L74:
+	li	a2,1
+	mv	a0,a2
 	ret
-.LBB5_16:
-	lbu	a1, %lo(.L_MergedGlobals+3)(a0)
-	addi	a2, a1, -255
-	seqz	a2, a2
-	not	a1, a1
-	addi	a2, a2, -1
-	sb	a1, %lo(.L_MergedGlobals+3)(a0)
-	ori	a2, a2, -39
-	j	.LBB5_6
-.LBB5_17:
-	lbu	a1, %lo(.L_MergedGlobals+3)(a0)
-	addi	a2, a1, -255
-	seqz	a2, a2
-	not	a1, a1
-	addi	a2, a2, -1
-	sb	a1, %lo(.L_MergedGlobals+3)(a0)
-	ori	a0, a2, -39
-	j	.LBB5_14
-.Lfunc_end5:
-	.size	getBits1, .Lfunc_end5-getBits1
-                                        # -- End function
-	.globl	getBits2                        # -- Begin function getBits2
-	.p2align	2
-	.type	getBits2,@function
-getBits2:                               # @getBits2
-# %bb.0:
-	addi	sp, sp, -32
-	sw	ra, 28(sp)                      # 4-byte Folded Spill
-	sw	s0, 24(sp)                      # 4-byte Folded Spill
-	sw	s1, 20(sp)                      # 4-byte Folded Spill
-	sw	s2, 16(sp)                      # 4-byte Folded Spill
-	sw	s3, 12(sp)                      # 4-byte Folded Spill
-	sw	s4, 8(sp)                       # 4-byte Folded Spill
-	sw	s5, 4(sp)                       # 4-byte Folded Spill
-	mv	s0, a0
-	lui	s1, %hi(.L_MergedGlobals)
-	addi	s1, s1, %lo(.L_MergedGlobals)
-	lbu	a1, 4(s1)
-	lhu	s4, 6(s1)
-	li	a0, 9
-	bltu	s0, a0, .LBB6_3
-# %bb.1:
-	sll	a0, s4, a1
-	addi	s2, s0, -8
-	sh	a0, 6(s1)
-	li	a0, 1
-	call	getOctet
-	lbu	a1, 4(s1)
-	lhu	a2, 6(s1)
-	li	a3, 8
-	or	a0, a2, a0
-	sub	a3, a3, a1
-	sll	a0, a0, a3
-	slli	a2, a0, 16
-	andi	a3, s4, -256
-	srli	a2, a2, 24
-	or	s3, a2, a3
-	zext.b	s5, s2
-	zext.h	a0, a0
-	bltu	a1, s5, .LBB6_4
-.LBB6_2:
-	sub	a2, a1, s2
-	sll	a1, a0, s5
-	j	.LBB6_5
-.LBB6_3:
-	mv	s2, s0
-	mv	s3, s4
-	zext.b	s5, s0
-	zext.h	a0, s4
-	bgeu	a1, s5, .LBB6_2
-.LBB6_4:
-	sll	a0, a0, a1
-	sh	a0, 6(s1)
-	li	a0, 1
-	call	getOctet
-	lhu	a1, 6(s1)
-	lbu	a2, 4(s1)
-	or	a0, a1, a0
-	sub	a1, s5, a2
-	sub	a2, a2, s2
-	sll	a1, a0, a1
-	addi	a2, a2, 8
-.LBB6_5:
-	li	a0, 16
-	sub	a0, a0, s0
-	srl	a0, s3, a0
-	sb	a2, 4(s1)
-	sh	a1, 6(s1)
-	lw	ra, 28(sp)                      # 4-byte Folded Reload
-	lw	s0, 24(sp)                      # 4-byte Folded Reload
-	lw	s1, 20(sp)                      # 4-byte Folded Reload
-	lw	s2, 16(sp)                      # 4-byte Folded Reload
-	lw	s3, 12(sp)                      # 4-byte Folded Reload
-	lw	s4, 8(sp)                       # 4-byte Folded Reload
-	lw	s5, 4(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 32
+.L75:
+	addi	a2,a2,1
+	beq	a7,a2,.L77
+.L78:
+	addi	a2,a2,1
+	slli	a3,a3,1
+	bgtu	a7,a2,.L78
+	j	.L77
+.L81:
+	addi	a6,a6,1
+	beq	a6,a3,.L68
+.L83:
+	addi	a6,a6,1
+	slli	a2,a2,1
+	bltu	a6,a3,.L83
+	mv	a0,a2
 	ret
-.Lfunc_end6:
-	.size	getBits2, .Lfunc_end6-getBits2
-                                        # -- End function
-	.globl	getBit                          # -- Begin function getBit
-	.p2align	2
-	.type	getBit,@function
-getBit:                                 # @getBit
-# %bb.0:
-	addi	sp, sp, -16
-	sw	ra, 12(sp)                      # 4-byte Folded Spill
-	sw	s0, 8(sp)                       # 4-byte Folded Spill
-	sw	s1, 4(sp)                       # 4-byte Folded Spill
-	lui	s0, %hi(.L_MergedGlobals)
-	addi	s0, s0, %lo(.L_MergedGlobals)
-	lbu	a2, 4(s0)
-	lhu	s1, 6(s0)
-	mv	a1, s1
-	bnez	a2, .LBB7_2
-# %bb.1:
-	li	a0, 1
-	call	getOctet
-	lbu	a2, 4(s0)
-	lh	a1, 6(s0)
-	or	a1, a1, a0
-	addi	a2, a2, 8
-.LBB7_2:
-	srli	a0, s1, 15
-	addi	a2, a2, -1
-	slli	a1, a1, 1
-	sb	a2, 4(s0)
-	sh	a1, 6(s0)
-	lw	ra, 12(sp)                      # 4-byte Folded Reload
-	lw	s0, 8(sp)                       # 4-byte Folded Reload
-	lw	s1, 4(sp)                       # 4-byte Folded Reload
-	addi	sp, sp, 16
+	.size	decode_elias_delta, .-decode_elias_delta
+	.align	2
+	.globl	decode_rice
+	.type	decode_rice, @function
+decode_rice:
+	mv	t3,a0
+	beq	a1,zero,.L109
+	li	a5,0
+	li	a7,0
+	li	a4,0
+	li	t1,7
+	li	a6,8
+.L100:
+	add	a3,t3,a7
+	lbu	a3,0(a3)
+	sub	a0,t1,a5
+	addi	a5,a5,1
+	bext	a3,a3,a0
+	beq	a5,a6,.L117
+.L101:
+	beq	a3,zero,.L116
+	addi	a4,a4,1
+	bgtu	a1,a7,.L100
+.L116:
+	sll	a0,a4,a2
+.L99:
+	beq	a2,zero,.L98
+	li	a3,0
+	li	a4,0
+	li	t5,7
+	li	t4,8
+.L108:
+	sub	t1,t5,a5
+	add	a6,t3,a7
+	addi	a5,a5,1
+	slli	a4,a4,1
+	bleu	a1,a7,.L104
+	lbu	a6,0(a6)
+	bext	a6,a6,t1
+	or	a4,a4,a6
+	bne	a5,t4,.L105
+	addi	a7,a7,1
+	li	a5,0
+.L105:
+	addi	a3,a3,1
+	bne	a2,a3,.L108
+.L106:
+	or	a0,a0,a4
 	ret
-.Lfunc_end7:
-	.size	getBit, .Lfunc_end7-getBit
-                                        # -- End function
-	.globl	getExtendTest                   # -- Begin function getExtendTest
-	.p2align	2
-	.type	getExtendTest,@function
-getExtendTest:                          # @getExtendTest
-# %bb.0:
-	li	a1, 14
-	addi	a0, a0, -1
-	zext.b	a0, a0
-	bltu	a1, a0, .LBB8_2
-# %bb.1:
-	lui	a1, %hi(.Lswitch.table.huffExtend)
-	addi	a1, a1, %lo(.Lswitch.table.huffExtend)
-	sh1add	a0, a0, a1
-	lhu	a0, 0(a0)
+.L117:
+	addi	a7,a7,1
+	li	a5,0
+	j	.L101
+.L98:
 	ret
-.LBB8_2:
-	li	a0, 0
+.L109:
+	li	a0,0
+	li	a5,0
+	li	a7,0
+	j	.L99
+.L104:
+	addi	a3,a3,1
+	beq	a2,a3,.L106
+.L107:
+	addi	a3,a3,1
+	slli	a4,a4,1
+	bgtu	a2,a3,.L107
+	or	a0,a0,a4
 	ret
-.Lfunc_end8:
-	.size	getExtendTest, .Lfunc_end8-getExtendTest
-                                        # -- End function
-	.globl	getExtendOffset                 # -- Begin function getExtendOffset
-	.p2align	2
-	.type	getExtendOffset,@function
-getExtendOffset:                        # @getExtendOffset
-# %bb.0:
-	li	a1, 14
-	addi	a0, a0, -1
-	zext.b	a0, a0
-	bltu	a1, a0, .LBB9_2
-# %bb.1:
-	lui	a1, %hi(.Lswitch.table.huffExtend.1)
-	addi	a1, a1, %lo(.Lswitch.table.huffExtend.1)
-	sh1add	a0, a0, a1
-	lhu	a0, 0(a0)
-	sext.h	a0, a0
+	.size	decode_rice, .-decode_rice
+	.align	2
+	.globl	decode_rice_fast
+	.type	decode_rice_fast, @function
+decode_rice_fast:
+	not	a5,a0
+	li	a3,31
+	clz	a5,a5
+	sub	a3,a3,a1
+	sub	a3,a3,a5
+	li	a4,-1
+	srl	a0,a0,a3
+	sll	a4,a4,a1
+	sll	a5,a5,a1
+	andn	a0,a0,a4
+	or	a0,a0,a5
 	ret
-.LBB9_2:
-	li	a0, 0
+	.size	decode_rice_fast, .-decode_rice_fast
+	.align	2
+	.globl	decode_golomb
+	.type	decode_golomb, @function
+decode_golomb:
+	addi	sp,sp,-32
+	sw	s2,16(sp)
+	sw	s3,12(sp)
+	sw	s4,8(sp)
+	sw	ra,28(sp)
+	sw	s0,24(sp)
+	sw	s1,20(sp)
+	mv	s2,a1
+	mv	s4,a0
+	mv	s3,a2
+	beq	a1,zero,.L143
+	li	s0,0
+	li	s1,0
+	li	a1,0
+	li	a2,7
+	li	a3,8
+.L121:
+	add	a5,s4,s1
+	lbu	a5,0(a5)
+	sub	a4,a2,s0
+	addi	s0,s0,1
+	bext	a5,a5,a4
+	beq	s0,a3,.L159
+.L122:
+	beq	a5,zero,.L157
+	addi	a1,a1,1
+	bgtu	s2,s1,.L121
+.L157:
+	mv	a0,s3
+	call	__mulsi3
+	li	a4,1
+	bleu	s3,a4,.L124
+.L163:
+	li	a5,0
+.L125:
+	mv	a3,a5
+	addi	a5,a5,1
+	bset	a4,x0,a5
+	bltu	a4,s3,.L125
+	sub	t3,a4,s3
+	beq	a4,s3,.L160
+	beq	a3,zero,.L119
+.L128:
+	li	a2,0
+	li	a5,0
+	li	t1,7
+	li	a7,8
+.L142:
+	add	a1,s4,s1
+	sub	a6,t1,s0
+	slli	a5,a5,1
+	bleu	s2,s1,.L136
+	lbu	a1,0(a1)
+	addi	s0,s0,1
+	bext	a1,a1,a6
+	or	a5,a5,a1
+	bne	s0,a7,.L137
+	addi	s1,s1,1
+	li	s0,0
+.L137:
+	addi	a2,a2,1
+	bne	a2,a3,.L142
+.L138:
+	bgtu	t3,a5,.L158
+	slli	a5,a5,1
+	bleu	s2,s1,.L141
+	add	s1,s4,s1
+	lbu	a3,0(s1)
+	li	a2,7
+	sub	a2,a2,s0
+	bext	a3,a3,a2
+	or	a5,a5,a3
+.L141:
+	add	a0,s3,a0
+	sub	a0,a0,a4
+.L158:
+	add	a0,a0,a5
+.L119:
+	lw	ra,28(sp)
+	lw	s0,24(sp)
+	lw	s1,20(sp)
+	lw	s2,16(sp)
+	lw	s3,12(sp)
+	lw	s4,8(sp)
+	addi	sp,sp,32
+	jr	ra
+.L159:
+	addi	s1,s1,1
+	li	s0,0
+	j	.L122
+.L160:
+	li	a1,0
+	li	a4,0
+	li	t1,7
+	li	a7,8
+	beq	a5,zero,.L119
+	sub	a6,t1,s0
+	add	a2,s4,s1
+	addi	s0,s0,1
+	slli	a4,a4,1
+	bleu	s2,s1,.L132
+.L162:
+	lbu	a2,0(a2)
+	bext	a2,a2,a6
+	or	a4,a4,a2
+	beq	s0,a7,.L161
+.L133:
+	beq	a3,a1,.L134
+	sub	a6,t1,s0
+	addi	a1,a1,1
+	add	a2,s4,s1
+	addi	s0,s0,1
+	slli	a4,a4,1
+	bgtu	s2,s1,.L162
+.L132:
+	addi	a2,a1,1
+	beq	a3,a1,.L134
+.L135:
+	addi	a2,a2,1
+	slli	a4,a4,1
+	bgtu	a5,a2,.L135
+.L134:
+	lw	ra,28(sp)
+	lw	s0,24(sp)
+	lw	s1,20(sp)
+	lw	s2,16(sp)
+	lw	s3,12(sp)
+	lw	s4,8(sp)
+	add	a0,a0,a4
+	addi	sp,sp,32
+	jr	ra
+.L161:
+	addi	s1,s1,1
+	li	s0,0
+	j	.L133
+.L143:
+	li	a4,1
+	li	a0,0
+	li	s0,0
+	li	s1,0
+	bgtu	s3,a4,.L163
+.L124:
+	mv	t3,a4
+	li	a3,-1
+	bne	s3,a4,.L128
+	j	.L119
+.L136:
+	addi	a2,a2,1
+	beq	a3,a2,.L138
+.L139:
+	addi	a2,a2,1
+	slli	a5,a5,1
+	bltu	a2,a3,.L139
+	j	.L138
+	.size	decode_golomb, .-decode_golomb
+	.align	2
+	.globl	decode_uleb128
+	.type	decode_uleb128, @function
+decode_uleb128:
+	beq	a1,zero,.L170
+	slli	t3,a1,3
+	sub	t3,t3,a1
+	mv	a6,a0
+	li	a5,0
+	li	a0,0
+	li	a1,0
+	li	t4,31
+	j	.L169
+.L173:
+	sll	a2,a3,a2
+	sext.b	a4,a4
+	li	a3,0
+	addi	a5,a5,7
+	or	a0,a0,a3
+	or	a1,a1,a2
+	bge	a4,zero,.L164
+.L174:
+	addi	a6,a6,1
+	beq	t3,a5,.L172
+.L169:
+	lbu	a4,0(a6)
+	addi	a2,a5,-32
+	sub	a7,t4,a5
+	andi	a3,a4,127
+	srli	t1,a3,1
+	bge	a2,zero,.L173
+	sll	a3,a3,a5
+	srl	a2,t1,a7
+	sext.b	a4,a4
+	addi	a5,a5,7
+	or	a0,a0,a3
+	or	a1,a1,a2
+	blt	a4,zero,.L174
+.L164:
 	ret
-.Lfunc_end9:
-	.size	getExtendOffset, .Lfunc_end9-getExtendOffset
-                                        # -- End function
-	.globl	huffExtend                      # -- Begin function huffExtend
-	.p2align	2
-	.type	huffExtend,@function
-huffExtend:                             # @huffExtend
-# %bb.0:
-	li	a3, 14
-	addi	a2, a1, -1
-	zext.b	a2, a2
-	bltu	a3, a2, .LBB10_3
-# %bb.1:
-	lui	a3, %hi(.Lswitch.table.huffExtend)
-	addi	a3, a3, %lo(.Lswitch.table.huffExtend)
-	sh1add	a2, a2, a3
-	lhu	a2, 0(a2)
-	bgeu	a0, a2, .LBB10_3
-# %bb.2:
-	lui	a2, %hi(.Lswitch.table.huffExtend.1)
-	addi	a2, a2, %lo(.Lswitch.table.huffExtend.1)
-	sh1add	a1, a1, a2
-	lh	a1, -2(a1)
-	add	a0, a1, a0
-.LBB10_3:
-	sext.h	a0, a0
+.L172:
 	ret
-.Lfunc_end10:
-	.size	huffExtend, .Lfunc_end10-huffExtend
-                                        # -- End function
-	.globl	huffDecode                      # -- Begin function huffDecode
-	.p2align	2
-	.type	huffDecode,@function
-huffDecode:                             # @huffDecode
-# %bb.0:
-	addi	sp, sp, -48
-	sw	ra, 44(sp)                      # 4-byte Folded Spill
-	sw	s0, 40(sp)                      # 4-byte Folded Spill
-	sw	s1, 36(sp)                      # 4-byte Folded Spill
-	sw	s2, 32(sp)                      # 4-byte Folded Spill
-	sw	s3, 28(sp)                      # 4-byte Folded Spill
-	sw	s4, 24(sp)                      # 4-byte Folded Spill
-	sw	s5, 20(sp)                      # 4-byte Folded Spill
-	sw	s6, 16(sp)                      # 4-byte Folded Spill
-	sw	s7, 12(sp)                      # 4-byte Folded Spill
-	mv	s0, a1
-	mv	s1, a0
-	lui	s2, %hi(.L_MergedGlobals)
-	addi	s2, s2, %lo(.L_MergedGlobals)
-	lbu	a0, 4(s2)
-	lhu	s3, 6(s2)
-	mv	s7, s3
-	bnez	a0, .LBB11_2
-# %bb.1:
-	li	a0, 1
-	call	getOctet
-	lbu	a1, 4(s2)
-	lh	a2, 6(s2)
-	or	s7, a2, a0
-	addi	a0, a1, 8
-.LBB11_2:
-	srli	s3, s3, 15
-	addi	a0, a0, -1
-	slli	s7, s7, 1
-	sb	a0, 4(s2)
-	sh	s7, 6(s2)
-	addi	s4, s1, 32
-	addi	s1, s1, 64
-	lui	s6, 16
-	li	s5, 16
-	addi	s6, s6, -1
-	j	.LBB11_4
-.LBB11_3:                               #   in Loop: Header=BB11_4 Depth=1
-	addi	a0, a0, -1
-	bexti	a2, s7, 15
-	slli	s7, a1, 1
-	sb	a0, 4(s2)
-	sh	s7, 6(s2)
-	sh1add	s3, s3, a2
-	addi	s1, s1, 1
-	addi	s5, s5, -1
-	addi	s4, s4, 2
-	beqz	s5, .LBB11_8
-.LBB11_4:                               # =>This Inner Loop Header: Depth=1
-	lhu	a1, 0(s4)
-	zext.h	a2, s3
-	xor	a3, a1, s6
-	sltu	a1, a1, a2
-	seqz	a2, a3
-	or	a1, a2, a1
-	beqz	a1, .LBB11_7
-# %bb.5:                                #   in Loop: Header=BB11_4 Depth=1
-	zext.b	a2, a0
-	mv	a1, s7
-	bnez	a2, .LBB11_3
-# %bb.6:                                #   in Loop: Header=BB11_4 Depth=1
-	li	a0, 1
-	call	getOctet
-	lbu	a2, 4(s2)
-	lh	a1, 6(s2)
-	or	a1, a1, a0
-	addi	a0, a2, 8
-	j	.LBB11_3
-.LBB11_7:
-	lbu	a0, 0(s1)
-	lbu	a1, -32(s4)
-	add	a0, a0, s3
-	sub	a0, a0, a1
-	zext.b	a0, a0
-	add	a0, s0, a0
-	lbu	a0, 0(a0)
-	j	.LBB11_9
-.LBB11_8:
-	li	a0, 0
-.LBB11_9:
-	lw	ra, 44(sp)                      # 4-byte Folded Reload
-	lw	s0, 40(sp)                      # 4-byte Folded Reload
-	lw	s1, 36(sp)                      # 4-byte Folded Reload
-	lw	s2, 32(sp)                      # 4-byte Folded Reload
-	lw	s3, 28(sp)                      # 4-byte Folded Reload
-	lw	s4, 24(sp)                      # 4-byte Folded Reload
-	lw	s5, 20(sp)                      # 4-byte Folded Reload
-	lw	s6, 16(sp)                      # 4-byte Folded Reload
-	lw	s7, 12(sp)                      # 4-byte Folded Reload
-	addi	sp, sp, 48
+.L170:
+	li	a0,0
 	ret
-.Lfunc_end11:
-	.size	huffDecode, .Lfunc_end11-huffDecode
-                                        # -- End function
-	.globl	huffCreate                      # -- Begin function huffCreate
-	.p2align	2
-	.type	huffCreate,@function
-huffCreate:                             # @huffCreate
-# %bb.0:
-	li	a2, 0
-	li	a3, 0
-	addi	a4, a1, 32
-	addi	a1, a1, 64
-	addi	a5, a0, 16
-	li	a6, -1
-	j	.LBB12_2
-.LBB12_1:                               #   in Loop: Header=BB12_2 Depth=1
-	sh	a3, -32(a4)
-	add	a3, a3, a7
-	addi	t0, a3, -1
-	sh	t0, 0(a4)
-	sb	a2, 0(a1)
-	add	a2, a7, a2
-	slli	a3, a3, 1
-	addi	a0, a0, 1
-	addi	a4, a4, 2
-	addi	a1, a1, 1
-	beq	a0, a5, .LBB12_4
-.LBB12_2:                               # =>This Inner Loop Header: Depth=1
-	lbu	a7, 0(a0)
-	bnez	a7, .LBB12_1
-# %bb.3:                                #   in Loop: Header=BB12_2 Depth=1
-	sh	zero, -32(a4)
-	sh	a6, 0(a4)
-	sb	zero, 0(a1)
-	slli	a3, a3, 1
-	addi	a0, a0, 1
-	addi	a4, a4, 2
-	addi	a1, a1, 1
-	bne	a0, a5, .LBB12_2
-.LBB12_4:
+	.size	decode_uleb128, .-decode_uleb128
+	.align	2
+	.globl	decode_sleb128
+	.type	decode_sleb128, @function
+decode_sleb128:
+	beq	a1,zero,.L184
+	slli	t3,a1,3
+	sub	t3,t3,a1
+	mv	a6,a0
+	li	a3,0
+	li	a0,0
+	li	a1,0
+	li	t4,31
+	j	.L183
+.L191:
+	sll	a4,a5,a4
+	li	a5,0
+	or	a5,a0,a5
+	or	a4,a1,a4
+	sext.b	a2,a7
+	addi	a3,a3,7
+	mv	a0,a5
+	mv	a1,a4
+	bge	a2,zero,.L189
+.L179:
+	addi	a6,a6,1
+	beq	a3,t3,.L190
+.L183:
+	lbu	a7,0(a6)
+	addi	a4,a3,-32
+	sub	a2,t4,a3
+	andi	a5,a7,127
+	srli	t1,a5,1
+	bge	a4,zero,.L191
+	srl	a4,t1,a2
+	sll	a5,a5,a3
+	or	a5,a0,a5
+	or	a4,a1,a4
+	sext.b	a2,a7
+	addi	a3,a3,7
+	mv	a0,a5
+	mv	a1,a4
+	blt	a2,zero,.L179
+.L189:
+	li	a2,63
+	bgtu	a3,a2,.L175
+	andi	a7,a7,64
+	beq	a7,zero,.L175
+	addi	a1,a3,-32
+	bset	a2,x0,a3
+	li	a3,0
+	blt	a1,zero,.L182
+	bset	a3,x0,a1
+	li	a2,0
+.L182:
+	neg	a1,a3
+	snez	a3,a2
+	sub	a1,a1,a3
+	neg	a2,a2
+	or	a1,a4,a1
+	or	a0,a5,a2
 	ret
-.Lfunc_end12:
-	.size	huffCreate, .Lfunc_end12-huffCreate
-                                        # -- End function
-	.globl	getHuffTable                    # -- Begin function getHuffTable
-	.p2align	2
-	.type	getHuffTable,@function
-getHuffTable:                           # @getHuffTable
-# %bb.0:
-	li	a1, 3
-	bltu	a1, a0, .LBB13_2
-# %bb.1:
-	lui	a1, %hi(.Lswitch.table.readDHTMarker)
-	addi	a1, a1, %lo(.Lswitch.table.readDHTMarker)
-	sh2add	a0, a0, a1
-	lw	a0, 0(a0)
+.L184:
+	li	a0,0
+.L175:
 	ret
-.LBB13_2:
-	li	a0, 0
+.L190:
 	ret
-.Lfunc_end13:
-	.size	getHuffTable, .Lfunc_end13-getHuffTable
-                                        # -- End function
-	.globl	getHuffVal                      # -- Begin function getHuffVal
-	.p2align	2
-	.type	getHuffVal,@function
-getHuffVal:                             # @getHuffVal
-# %bb.0:
-	li	a1, 3
-	bltu	a1, a0, .LBB14_2
-# %bb.1:
-	lui	a1, %hi(.Lswitch.table.readDHTMarker.2)
-	addi	a1, a1, %lo(.Lswitch.table.readDHTMarker.2)
-	sh2add	a0, a0, a1
-	lw	a0, 0(a0)
+	.size	decode_sleb128, .-decode_sleb128
+	.align	2
+	.globl	decode_zigzag
+	.type	decode_zigzag, @function
+decode_zigzag:
+	andi	a5,a0,1
+	neg	a5,a5
+	srli	a0,a0,1
+	xor	a0,a5,a0
 	ret
-.LBB14_2:
-	li	a0, 0
+	.size	decode_zigzag, .-decode_zigzag
+	.align	2
+	.globl	decode_zigzag_uleb128
+	.type	decode_zigzag_uleb128, @function
+decode_zigzag_uleb128:
+	beq	a1,zero,.L199
+	slli	a5,a1,3
+	sub	a1,a5,a1
+	li	a7,0
+	li	a6,0
+	li	a3,0
+	li	t4,31
+	j	.L198
+.L201:
+	sll	a4,a5,a4
+	li	a5,0
+	or	a5,a7,a5
+	or	a4,a6,a4
+	sext.b	a2,a2
+	addi	a3,a3,7
+	mv	a7,a5
+	mv	a6,a4
+	bge	a2,zero,.L197
+.L202:
+	addi	a0,a0,1
+	beq	a3,a1,.L197
+.L198:
+	lbu	a2,0(a0)
+	addi	a4,a3,-32
+	sub	t1,t4,a3
+	andi	a5,a2,127
+	srli	t3,a5,1
+	bge	a4,zero,.L201
+	sll	a5,a5,a3
+	srl	a4,t3,t1
+	or	a5,a7,a5
+	or	a4,a6,a4
+	sext.b	a2,a2
+	addi	a3,a3,7
+	mv	a7,a5
+	mv	a6,a4
+	blt	a2,zero,.L202
+.L197:
+	andi	a1,a5,1
+	slli	a3,a4,31
+	srli	a5,a5,1
+	add	a5,a3,a5
+	srli	a4,a4,1
+	neg	a0,a1
+	xor	a1,a0,a4
+	xor	a0,a0,a5
 	ret
-.Lfunc_end14:
-	.size	getHuffVal, .Lfunc_end14-getHuffVal
-                                        # -- End function
-	.globl	getMaxHuffCodes                 # -- Begin function getMaxHuffCodes
-	.p2align	2
-	.type	getMaxHuffCodes,@function
-getMaxHuffCodes:                        # @getMaxHuffCodes
-# %bb.0:
-	li	a1, 2
-	bltu	a0, a1, .LBB15_2
-# %bb.1:
-	li	a0, 255
+.L199:
+	li	a0,0
 	ret
-.LBB15_2:
-	li	a0, 12
+	.size	decode_zigzag_uleb128, .-decode_zigzag_uleb128
+	.align	2
+	.globl	decode_rle
+	.type	decode_rle, @function
+decode_rle:
+	li	a5,1
+	bleu	a1,a5,.L209
+	andi	a1,a1,-2
+	mv	a6,a0
+	add	a7,a0,a1
+	li	a0,0
+.L205:
+	bleu	a3,a0,.L215
+	lbu	a4,0(a6)
+	beq	a4,zero,.L206
+	lbu	a1,1(a6)
+	add	a4,a4,a0
+.L207:
+	addi	a0,a0,1
+	add	a5,a2,a0
+	sb	a1,-1(a5)
+	beq	a0,a4,.L206
+	bne	a3,a0,.L207
+.L206:
+	addi	a6,a6,2
+	bne	a6,a7,.L205
 	ret
-.Lfunc_end15:
-	.size	getMaxHuffCodes, .Lfunc_end15-getMaxHuffCodes
-                                        # -- End function
-	.globl	readDHTMarker                   # -- Begin function readDHTMarker
-	.p2align	2
-	.type	readDHTMarker,@function
-readDHTMarker:                          # @readDHTMarker
-# %bb.0:
-	addi	sp, sp, -80
-	sw	ra, 76(sp)                      # 4-byte Folded Spill
-	sw	s0, 72(sp)                      # 4-byte Folded Spill
-	sw	s1, 68(sp)                      # 4-byte Folded Spill
-	sw	s2, 64(sp)                      # 4-byte Folded Spill
-	sw	s3, 60(sp)                      # 4-byte Folded Spill
-	sw	s4, 56(sp)                      # 4-byte Folded Spill
-	sw	s5, 52(sp)                      # 4-byte Folded Spill
-	sw	s6, 48(sp)                      # 4-byte Folded Spill
-	sw	s7, 44(sp)                      # 4-byte Folded Spill
-	sw	s8, 40(sp)                      # 4-byte Folded Spill
-	sw	s9, 36(sp)                      # 4-byte Folded Spill
-	sw	s10, 32(sp)                     # 4-byte Folded Spill
-	sw	s11, 28(sp)                     # 4-byte Folded Spill
-	li	a0, 16
-	call	getBits1
-	li	a1, 2
-	bgeu	a0, a1, .LBB16_2
-.LBB16_1:
-	li	a0, 4
-	j	.LBB16_72
-.LBB16_2:
-	addi	s7, a0, -2
-	slli	a0, s7, 16
-	beqz	a0, .LBB16_72
-# %bb.3:
-	lui	s3, %hi(.L_MergedGlobals)
-	addi	s3, s3, %lo(.L_MergedGlobals)
-	addi	s4, sp, 28
-	lbu	a1, 4(s3)
-	lhu	s1, 6(s3)
-	li	s5, 7
-	li	s8, 8
-	lui	a0, 16
-	addi	s2, a0, -1
-	sw	s2, 8(sp)                       # 4-byte Folded Spill
-	j	.LBB16_6
-.LBB16_4:                               #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 27(sp)
-	sh	zero, 28(s11)
-	sh	s2, 60(s11)
-	sb	zero, 78(s11)
-	beqz	a7, .LBB16_70
-.LBB16_5:                               #   in Loop: Header=BB16_6 Depth=1
-	slli	a3, a3, 1
-	add	a4, a3, a7
-	addi	a4, a4, -1
-	sub	s7, s7, a0
-	slli	a0, s7, 16
-	sh	a3, 30(s11)
-	sh	a4, 62(s11)
-	sb	a2, 79(s11)
-	beqz	a0, .LBB16_72
-.LBB16_6:                               # =>This Loop Header: Depth=1
-                                        #     Child Loop BB16_18 Depth 2
-                                        #     Child Loop BB16_33 Depth 2
-	zext.b	a0, a1
-	zext.h	s9, s1
-	bltu	s5, a0, .LBB16_13
-# %bb.7:                                #   in Loop: Header=BB16_6 Depth=1
-	lbu	a0, 1(s3)
-	sll	a1, s9, a1
-	sh	a1, 6(s3)
-	bnez	a0, .LBB16_11
-# %bb.8:                                #   in Loop: Header=BB16_6 Depth=1
-	lw	a4, 8(s3)
-	lw	a3, 12(s3)
-	li	a0, 4
-	sb	a0, 0(s3)
-	li	a1, 252
-	addi	a0, s3, 20
-	addi	a2, s3, 1
-	jalr	a4
-	lui	a2, %hi(.L_MergedGlobals)
-	beqz	a0, .LBB16_10
-# %bb.9:                                #   in Loop: Header=BB16_6 Depth=1
-	sb	a0, %lo(.L_MergedGlobals+2)(a2)
-.LBB16_10:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a0, %lo(.L_MergedGlobals+1)(a2)
-	beqz	a0, .LBB16_71
-.LBB16_11:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a1, 0(s3)
-	add	a2, s3, a1
-	lbu	a2, 16(a2)
-	addi	a0, a0, -1
-	addi	a1, a1, 1
-	sb	a1, 0(s3)
-	sb	a0, 1(s3)
-.LBB16_12:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a1, 4(s3)
-	lhu	a0, 6(s3)
-	zext.b	a2, a2
-	or	a0, a0, a2
-	sub	a2, s8, a1
-	sll	s9, a0, a2
-	srli	a2, s1, 8
-	andi	a3, a2, 14
-	sb	a1, 4(s3)
-	sh	s9, 6(s3)
-	li	a0, 3
-	beqz	a3, .LBB16_14
-	j	.LBB16_72
-.LBB16_13:                              #   in Loop: Header=BB16_6 Depth=1
-	addi	a1, a1, -8
-	slli	s9, s9, 8
-	srli	a2, s1, 8
-	andi	a3, a2, 14
-	sb	a1, 4(s3)
-	sh	s9, 6(s3)
-	li	a0, 3
-	bnez	a3, .LBB16_72
-.LBB16_14:                              #   in Loop: Header=BB16_6 Depth=1
-	andi	a3, a2, 240
-	li	a4, 16
-	bltu	a4, a3, .LBB16_72
-# %bb.15:                               #   in Loop: Header=BB16_6 Depth=1
-	li	s6, 0
-	zext.b	a0, a2
-	srli	s1, s1, 11
-	andi	s1, s1, 2
-	andi	a0, a0, 1
-	or	s10, s1, a0
-	lui	a0, %hi(.Lswitch.table.readDHTMarker)
-	addi	a0, a0, %lo(.Lswitch.table.readDHTMarker)
-	sh2add	a0, s10, a0
-	lui	a2, %hi(.Lswitch.table.readDHTMarker.2)
-	addi	a2, a2, %lo(.Lswitch.table.readDHTMarker.2)
-	sh2add	a2, s10, a2
-	lbu	a3, 5(s3)
-	lw	s11, 0(a0)
-	lw	s0, 0(a2)
-	bset	a0, a3, s10
-	sb	a0, 5(s3)
-	addi	s2, sp, 12
-	j	.LBB16_18
-.LBB16_16:                              #   in Loop: Header=BB16_18 Depth=2
-	addi	a1, a1, -8
-	slli	s1, s1, 8
-.LBB16_17:                              #   in Loop: Header=BB16_18 Depth=2
-	srli	a0, s9, 8
-	sb	a1, 4(s3)
-	sh	s1, 6(s3)
-	zext.b	a2, a0
-	sb	a0, 0(s2)
-	addi	s2, s2, 1
-	add	s6, a2, s6
-	mv	s9, s1
-	beq	s2, s4, .LBB16_26
-.LBB16_18:                              #   Parent Loop BB16_6 Depth=1
-                                        # =>  This Inner Loop Header: Depth=2
-	zext.b	a0, a1
-	zext.h	s1, s9
-	bltu	s5, a0, .LBB16_16
-# %bb.19:                               #   in Loop: Header=BB16_18 Depth=2
-	lbu	a0, 1(s3)
-	sll	a1, s1, a1
-	sh	a1, 6(s3)
-	bnez	a0, .LBB16_23
-# %bb.20:                               #   in Loop: Header=BB16_18 Depth=2
-	lw	a4, 8(s3)
-	lw	a3, 12(s3)
-	li	a0, 4
-	sb	a0, 0(s3)
-	li	a1, 252
-	addi	a0, s3, 20
-	addi	a2, s3, 1
-	jalr	a4
-	lui	a2, %hi(.L_MergedGlobals)
-	beqz	a0, .LBB16_22
-# %bb.21:                               #   in Loop: Header=BB16_18 Depth=2
-	sb	a0, %lo(.L_MergedGlobals+2)(a2)
-.LBB16_22:                              #   in Loop: Header=BB16_18 Depth=2
-	lbu	a0, %lo(.L_MergedGlobals+1)(a2)
-	beqz	a0, .LBB16_25
-.LBB16_23:                              #   in Loop: Header=BB16_18 Depth=2
-	lbu	a1, 0(s3)
-	add	a2, s3, a1
-	lbu	a2, 16(a2)
-	addi	a0, a0, -1
-	addi	a1, a1, 1
-	sb	a1, 0(s3)
-	sb	a0, 1(s3)
-.LBB16_24:                              #   in Loop: Header=BB16_18 Depth=2
-	lbu	a1, 4(s3)
-	lhu	a0, 6(s3)
-	zext.b	a2, a2
-	or	a0, a0, a2
-	sub	a2, s8, a1
-	sll	s1, a0, a2
-	j	.LBB16_17
-.LBB16_25:                              #   in Loop: Header=BB16_18 Depth=2
-	lbu	a0, %lo(.L_MergedGlobals+3)(a2)
-	addi	a1, a0, -255
-	seqz	a1, a1
-	not	a0, a0
-	addi	a1, a1, -1
-	sb	a0, %lo(.L_MergedGlobals+3)(a2)
-	ori	a2, a1, -39
-	j	.LBB16_24
-.LBB16_26:                              #   in Loop: Header=BB16_6 Depth=1
-	li	a0, 2
-	bltu	s10, a0, .LBB16_28
-# %bb.27:                               #   in Loop: Header=BB16_6 Depth=1
-	li	a2, 255
-	zext.h	s9, s6
-	bgeu	a2, s9, .LBB16_29
-	j	.LBB16_72
-.LBB16_28:                              #   in Loop: Header=BB16_6 Depth=1
-	li	a2, 12
-	zext.h	s9, s6
-	bltu	a2, s9, .LBB16_72
-.LBB16_29:                              #   in Loop: Header=BB16_6 Depth=1
-	slli	a0, s6, 16
-	beqz	a0, .LBB16_41
-# %bb.30:                               #   in Loop: Header=BB16_6 Depth=1
-	li	s10, 0
-	mv	s2, s1
-	j	.LBB16_33
-.LBB16_31:                              #   in Loop: Header=BB16_33 Depth=2
-	addi	a1, a1, -8
-	slli	s1, s1, 8
-.LBB16_32:                              #   in Loop: Header=BB16_33 Depth=2
-	zext.b	a0, s10
-	sb	a1, 4(s3)
-	sh	s1, 6(s3)
-	srli	a2, s2, 8
-	addi	s10, s10, 1
-	add	a0, s0, a0
-	zext.b	a3, s10
-	sb	a2, 0(a0)
-	mv	s2, s1
-	bgeu	a3, s9, .LBB16_41
-.LBB16_33:                              #   Parent Loop BB16_6 Depth=1
-                                        # =>  This Inner Loop Header: Depth=2
-	zext.b	a0, a1
-	zext.h	s1, s2
-	bltu	s5, a0, .LBB16_31
-# %bb.34:                               #   in Loop: Header=BB16_33 Depth=2
-	lbu	a0, 1(s3)
-	sll	a1, s1, a1
-	sh	a1, 6(s3)
-	bnez	a0, .LBB16_38
-# %bb.35:                               #   in Loop: Header=BB16_33 Depth=2
-	lw	a4, 8(s3)
-	lw	a3, 12(s3)
-	li	a0, 4
-	sb	a0, 0(s3)
-	li	a1, 252
-	addi	a0, s3, 20
-	addi	a2, s3, 1
-	jalr	a4
-	lui	a2, %hi(.L_MergedGlobals)
-	beqz	a0, .LBB16_37
-# %bb.36:                               #   in Loop: Header=BB16_33 Depth=2
-	sb	a0, %lo(.L_MergedGlobals+2)(a2)
-.LBB16_37:                              #   in Loop: Header=BB16_33 Depth=2
-	lbu	a0, %lo(.L_MergedGlobals+1)(a2)
-	beqz	a0, .LBB16_40
-.LBB16_38:                              #   in Loop: Header=BB16_33 Depth=2
-	lbu	a1, 0(s3)
-	add	a2, s3, a1
-	lbu	a2, 16(a2)
-	addi	a0, a0, -1
-	addi	a1, a1, 1
-	sb	a1, 0(s3)
-	sb	a0, 1(s3)
-.LBB16_39:                              #   in Loop: Header=BB16_33 Depth=2
-	lbu	a1, 4(s3)
-	lhu	a0, 6(s3)
-	zext.b	a2, a2
-	or	a0, a0, a2
-	sub	a2, s8, a1
-	sll	s1, a0, a2
-	j	.LBB16_32
-.LBB16_40:                              #   in Loop: Header=BB16_33 Depth=2
-	lbu	a0, %lo(.L_MergedGlobals+3)(a2)
-	addi	a1, a0, -255
-	seqz	a1, a1
-	not	a0, a0
-	addi	a1, a1, -1
-	sb	a0, %lo(.L_MergedGlobals+3)(a2)
-	ori	a2, a1, -39
-	j	.LBB16_39
-.LBB16_41:                              #   in Loop: Header=BB16_6 Depth=1
-	addi	a0, s6, 17
-	zext.h	a2, a0
-	zext.h	a3, s7
-	bltu	a3, a2, .LBB16_1
-# %bb.42:                               #   in Loop: Header=BB16_6 Depth=1
-	lbu	a2, 12(sp)
-	lbu	a6, 13(sp)
-	seqz	a3, a2
-	slli	a4, a2, 1
-	addi	a3, a3, -1
-	and	a2, a3, a2
-	and	a3, a3, a4
-	addi	a4, a2, -1
-	sh	zero, 0(s11)
-	sh	a4, 32(s11)
-	sb	zero, 64(s11)
-	beqz	a6, .LBB16_56
-# %bb.43:                               #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a6
-	mv	a5, a2
-	add	a2, a6, a2
-	addi	a6, a3, -1
-	lw	s2, 8(sp)                       # 4-byte Folded Reload
-	lbu	a7, 14(sp)
-	sh	a4, 2(s11)
-	sh	a6, 34(s11)
-	sb	a5, 65(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_57
-.LBB16_44:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 15(sp)
-	sh	a4, 4(s11)
-	sh	a6, 36(s11)
-	sb	a5, 66(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_58
-.LBB16_45:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 16(sp)
-	sh	a4, 6(s11)
-	sh	a6, 38(s11)
-	sb	a5, 67(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_59
-.LBB16_46:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 17(sp)
-	sh	a4, 8(s11)
-	sh	a6, 40(s11)
-	sb	a5, 68(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_60
-.LBB16_47:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 18(sp)
-	sh	a4, 10(s11)
-	sh	a6, 42(s11)
-	sb	a5, 69(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_61
-.LBB16_48:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 19(sp)
-	sh	a4, 12(s11)
-	sh	a6, 44(s11)
-	sb	a5, 70(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_62
-.LBB16_49:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 20(sp)
-	sh	a4, 14(s11)
-	sh	a6, 46(s11)
-	sb	a5, 71(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_63
-.LBB16_50:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 21(sp)
-	sh	a4, 16(s11)
-	sh	a6, 48(s11)
-	sb	a5, 72(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_64
-.LBB16_51:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 22(sp)
-	sh	a4, 18(s11)
-	sh	a6, 50(s11)
-	sb	a5, 73(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_65
-.LBB16_52:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 23(sp)
-	sh	a4, 20(s11)
-	sh	a6, 52(s11)
-	sb	a5, 74(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_66
-.LBB16_53:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 24(sp)
-	sh	a4, 22(s11)
-	sh	a6, 54(s11)
-	sb	a5, 75(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_67
-.LBB16_54:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 25(sp)
-	sh	a4, 24(s11)
-	sh	a6, 56(s11)
-	sb	a5, 76(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_68
-.LBB16_55:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 26(sp)
-	sh	a4, 26(s11)
-	sh	a6, 58(s11)
-	sb	a5, 77(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_69
-	j	.LBB16_4
-.LBB16_56:                              #   in Loop: Header=BB16_6 Depth=1
-	lw	s2, 8(sp)                       # 4-byte Folded Reload
-	lbu	a7, 14(sp)
-	sh	zero, 2(s11)
-	sh	s2, 34(s11)
-	sb	zero, 65(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_44
-.LBB16_57:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 15(sp)
-	sh	zero, 4(s11)
-	sh	s2, 36(s11)
-	sb	zero, 66(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_45
-.LBB16_58:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 16(sp)
-	sh	zero, 6(s11)
-	sh	s2, 38(s11)
-	sb	zero, 67(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_46
-.LBB16_59:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 17(sp)
-	sh	zero, 8(s11)
-	sh	s2, 40(s11)
-	sb	zero, 68(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_47
-.LBB16_60:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 18(sp)
-	sh	zero, 10(s11)
-	sh	s2, 42(s11)
-	sb	zero, 69(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_48
-.LBB16_61:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 19(sp)
-	sh	zero, 12(s11)
-	sh	s2, 44(s11)
-	sb	zero, 70(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_49
-.LBB16_62:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 20(sp)
-	sh	zero, 14(s11)
-	sh	s2, 46(s11)
-	sb	zero, 71(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_50
-.LBB16_63:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 21(sp)
-	sh	zero, 16(s11)
-	sh	s2, 48(s11)
-	sb	zero, 72(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_51
-.LBB16_64:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 22(sp)
-	sh	zero, 18(s11)
-	sh	s2, 50(s11)
-	sb	zero, 73(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_52
-.LBB16_65:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 23(sp)
-	sh	zero, 20(s11)
-	sh	s2, 52(s11)
-	sb	zero, 74(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_53
-.LBB16_66:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 24(sp)
-	sh	zero, 22(s11)
-	sh	s2, 54(s11)
-	sb	zero, 75(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_54
-.LBB16_67:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 25(sp)
-	sh	zero, 24(s11)
-	sh	s2, 56(s11)
-	sb	zero, 76(s11)
-	slli	a3, a3, 1
-	bnez	a7, .LBB16_55
-.LBB16_68:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a7, 26(sp)
-	sh	zero, 26(s11)
-	sh	s2, 58(s11)
-	sb	zero, 77(s11)
-	slli	a3, a3, 1
-	beqz	a7, .LBB16_4
-.LBB16_69:                              #   in Loop: Header=BB16_6 Depth=1
-	mv	a4, a3
-	add	a3, a3, a7
-	mv	a5, a2
-	add	a2, a7, a2
-	addi	a6, a3, -1
-	lbu	a7, 27(sp)
-	sh	a4, 28(s11)
-	sh	a6, 60(s11)
-	sb	a5, 78(s11)
-	bnez	a7, .LBB16_5
-.LBB16_70:                              #   in Loop: Header=BB16_6 Depth=1
-	sub	s7, s7, a0
-	slli	a0, s7, 16
-	sh	zero, 30(s11)
-	sh	s2, 62(s11)
-	sb	zero, 79(s11)
-	bnez	a0, .LBB16_6
-	j	.LBB16_72
-.LBB16_71:                              #   in Loop: Header=BB16_6 Depth=1
-	lbu	a0, %lo(.L_MergedGlobals+3)(a2)
-	addi	a1, a0, -255
-	seqz	a1, a1
-	not	a0, a0
-	addi	a1, a1, -1
-	sb	a0, %lo(.L_MergedGlobals+3)(a2)
-	ori	a2, a1, -39
-	j	.LBB16_12
-.LBB16_72:
-	lw	ra, 76(sp)                      # 4-byte Folded Reload
-	lw	s0, 72(sp)                      # 4-byte Folded Reload
-	lw	s1, 68(sp)                      # 4-byte Folded Reload
-	lw	s2, 64(sp)                      # 4-byte Folded Reload
-	lw	s3, 60(sp)                      # 4-byte Folded Reload
-	lw	s4, 56(sp)                      # 4-byte Folded Reload
-	lw	s5, 52(sp)                      # 4-byte Folded Reload
-	lw	s6, 48(sp)                      # 4-byte Folded Reload
-	lw	s7, 44(sp)                      # 4-byte Folded Reload
-	lw	s8, 40(sp)                      # 4-byte Folded Reload
-	lw	s9, 36(sp)                      # 4-byte Folded Reload
-	lw	s10, 32(sp)                     # 4-byte Folded Reload
-	lw	s11, 28(sp)                     # 4-byte Folded Reload
-	addi	sp, sp, 80
+.L215:
 	ret
-.Lfunc_end16:
-	.size	readDHTMarker, .Lfunc_end16-readDHTMarker
-                                        # -- End function
-	.type	ZAG,@object                     # @ZAG
-	.section	.rodata,"a",@progbits
-	.globl	ZAG
-ZAG:
-	.ascii	"\000\001\b\020\t\002\003\n\021\030 \031\022\013\004\005\f\023\032!(0)\"\033\024\r\006\007\016\025\034#*1892+$\035\026\017\027\036%,3:;4-&\037'.5<=6/7>?"
-	.size	ZAG, 64
-
-	.type	gHuffTab0,@object               # @gHuffTab0
-	.bss
-	.globl	gHuffTab0
-	.p2align	1, 0x0
-gHuffTab0:
-	.zero	80
-	.size	gHuffTab0, 80
-
-	.type	gHuffTab1,@object               # @gHuffTab1
-	.globl	gHuffTab1
-	.p2align	1, 0x0
-gHuffTab1:
-	.zero	80
-	.size	gHuffTab1, 80
-
-	.type	gHuffTab2,@object               # @gHuffTab2
-	.globl	gHuffTab2
-	.p2align	1, 0x0
-gHuffTab2:
-	.zero	80
-	.size	gHuffTab2, 80
-
-	.type	gHuffTab3,@object               # @gHuffTab3
-	.globl	gHuffTab3
-	.p2align	1, 0x0
-gHuffTab3:
-	.zero	80
-	.size	gHuffTab3, 80
-
-	.type	gHuffVal0,@object               # @gHuffVal0
-	.globl	gHuffVal0
-gHuffVal0:
-	.zero	16
-	.size	gHuffVal0, 16
-
-	.type	gHuffVal1,@object               # @gHuffVal1
-	.globl	gHuffVal1
-gHuffVal1:
-	.zero	16
-	.size	gHuffVal1, 16
-
-	.type	gHuffVal2,@object               # @gHuffVal2
-	.globl	gHuffVal2
-gHuffVal2:
-	.zero	256
-	.size	gHuffVal2, 256
-
-	.type	gHuffVal3,@object               # @gHuffVal3
-	.globl	gHuffVal3
-gHuffVal3:
-	.zero	256
-	.size	gHuffVal3, 256
-
-	.type	gCoeffBuf,@object               # @gCoeffBuf
-	.globl	gCoeffBuf
-	.p2align	1, 0x0
-gCoeffBuf:
-	.zero	128
-	.size	gCoeffBuf, 128
-
-	.type	gMCUBufR,@object                # @gMCUBufR
-	.globl	gMCUBufR
-gMCUBufR:
-	.zero	256
-	.size	gMCUBufR, 256
-
-	.type	gMCUBufG,@object                # @gMCUBufG
-	.globl	gMCUBufG
-gMCUBufG:
-	.zero	256
-	.size	gMCUBufG, 256
-
-	.type	gMCUBufB,@object                # @gMCUBufB
-	.globl	gMCUBufB
-gMCUBufB:
-	.zero	256
-	.size	gMCUBufB, 256
-
-	.type	gQuant0,@object                 # @gQuant0
-	.globl	gQuant0
-	.p2align	1, 0x0
-gQuant0:
-	.zero	128
-	.size	gQuant0, 128
-
-	.type	gQuant1,@object                 # @gQuant1
-	.globl	gQuant1
-	.p2align	1, 0x0
-gQuant1:
-	.zero	128
-	.size	gQuant1, 128
-
-	.type	gLastDC,@object                 # @gLastDC
-	.globl	gLastDC
-	.p2align	1, 0x0
-gLastDC:
-	.zero	6
-	.size	gLastDC, 6
-
-	.type	gValidQuantTables,@object       # @gValidQuantTables
-	.globl	gValidQuantTables
-gValidQuantTables:
-	.byte	0                               # 0x0
-	.size	gValidQuantTables, 1
-
-	.type	gImageXSize,@object             # @gImageXSize
-	.globl	gImageXSize
-	.p2align	1, 0x0
-gImageXSize:
-	.half	0                               # 0x0
-	.size	gImageXSize, 2
-
-	.type	gImageYSize,@object             # @gImageYSize
-	.globl	gImageYSize
-	.p2align	1, 0x0
-gImageYSize:
-	.half	0                               # 0x0
-	.size	gImageYSize, 2
-
-	.type	gCompsInFrame,@object           # @gCompsInFrame
-	.globl	gCompsInFrame
-gCompsInFrame:
-	.byte	0                               # 0x0
-	.size	gCompsInFrame, 1
-
-	.type	gCompIdent,@object              # @gCompIdent
-	.globl	gCompIdent
-gCompIdent:
-	.zero	3
-	.size	gCompIdent, 3
-
-	.type	gCompHSamp,@object              # @gCompHSamp
-	.globl	gCompHSamp
-gCompHSamp:
-	.zero	3
-	.size	gCompHSamp, 3
-
-	.type	gCompVSamp,@object              # @gCompVSamp
-	.globl	gCompVSamp
-gCompVSamp:
-	.zero	3
-	.size	gCompVSamp, 3
-
-	.type	gCompQuant,@object              # @gCompQuant
-	.globl	gCompQuant
-gCompQuant:
-	.zero	3
-	.size	gCompQuant, 3
-
-	.type	gRestartInterval,@object        # @gRestartInterval
-	.globl	gRestartInterval
-	.p2align	1, 0x0
-gRestartInterval:
-	.half	0                               # 0x0
-	.size	gRestartInterval, 2
-
-	.type	gNextRestartNum,@object         # @gNextRestartNum
-	.globl	gNextRestartNum
-	.p2align	1, 0x0
-gNextRestartNum:
-	.half	0                               # 0x0
-	.size	gNextRestartNum, 2
-
-	.type	gRestartsLeft,@object           # @gRestartsLeft
-	.globl	gRestartsLeft
-	.p2align	1, 0x0
-gRestartsLeft:
-	.half	0                               # 0x0
-	.size	gRestartsLeft, 2
-
-	.type	gCompsInScan,@object            # @gCompsInScan
-	.globl	gCompsInScan
-gCompsInScan:
-	.byte	0                               # 0x0
-	.size	gCompsInScan, 1
-
-	.type	gCompList,@object               # @gCompList
-	.globl	gCompList
-gCompList:
-	.zero	3
-	.size	gCompList, 3
-
-	.type	gCompDCTab,@object              # @gCompDCTab
-	.globl	gCompDCTab
-gCompDCTab:
-	.zero	3
-	.size	gCompDCTab, 3
-
-	.type	gCompACTab,@object              # @gCompACTab
-	.globl	gCompACTab
-gCompACTab:
-	.zero	3
-	.size	gCompACTab, 3
-
-	.type	gScanType,@object               # @gScanType
-	.globl	gScanType
-	.p2align	2, 0x0
-gScanType:
-	.word	0                               # 0x0
-	.size	gScanType, 4
-
-	.type	gMaxBlocksPerMCU,@object        # @gMaxBlocksPerMCU
-	.globl	gMaxBlocksPerMCU
-gMaxBlocksPerMCU:
-	.byte	0                               # 0x0
-	.size	gMaxBlocksPerMCU, 1
-
-	.type	gMaxMCUXSize,@object            # @gMaxMCUXSize
-	.globl	gMaxMCUXSize
-gMaxMCUXSize:
-	.byte	0                               # 0x0
-	.size	gMaxMCUXSize, 1
-
-	.type	gMaxMCUYSize,@object            # @gMaxMCUYSize
-	.globl	gMaxMCUYSize
-gMaxMCUYSize:
-	.byte	0                               # 0x0
-	.size	gMaxMCUYSize, 1
-
-	.type	gMaxMCUSPerRow,@object          # @gMaxMCUSPerRow
-	.globl	gMaxMCUSPerRow
-	.p2align	1, 0x0
-gMaxMCUSPerRow:
-	.half	0                               # 0x0
-	.size	gMaxMCUSPerRow, 2
-
-	.type	gMaxMCUSPerCol,@object          # @gMaxMCUSPerCol
-	.globl	gMaxMCUSPerCol
-	.p2align	1, 0x0
-gMaxMCUSPerCol:
-	.half	0                               # 0x0
-	.size	gMaxMCUSPerCol, 2
-
-	.type	gNumMCUSRemainingX,@object      # @gNumMCUSRemainingX
-	.globl	gNumMCUSRemainingX
-	.p2align	1, 0x0
-gNumMCUSRemainingX:
-	.half	0                               # 0x0
-	.size	gNumMCUSRemainingX, 2
-
-	.type	gNumMCUSRemainingY,@object      # @gNumMCUSRemainingY
-	.globl	gNumMCUSRemainingY
-	.p2align	1, 0x0
-gNumMCUSRemainingY:
-	.half	0                               # 0x0
-	.size	gNumMCUSRemainingY, 2
-
-	.type	gMCUOrg,@object                 # @gMCUOrg
-	.globl	gMCUOrg
-gMCUOrg:
-	.zero	6
-	.size	gMCUOrg, 6
-
-	.type	gReduce,@object                 # @gReduce
-	.globl	gReduce
-gReduce:
-	.byte	0                               # 0x0
-	.size	gReduce, 1
-
-	.type	.Lswitch.table.huffExtend,@object # @switch.table.huffExtend
-	.section	.rodata,"a",@progbits
-	.p2align	1, 0x0
-.Lswitch.table.huffExtend:
-	.half	1                               # 0x1
-	.half	2                               # 0x2
-	.half	4                               # 0x4
-	.half	8                               # 0x8
-	.half	16                              # 0x10
-	.half	32                              # 0x20
-	.half	64                              # 0x40
-	.half	128                             # 0x80
-	.half	256                             # 0x100
-	.half	512                             # 0x200
-	.half	1024                            # 0x400
-	.half	2048                            # 0x800
-	.half	4096                            # 0x1000
-	.half	8192                            # 0x2000
-	.half	16384                           # 0x4000
-	.size	.Lswitch.table.huffExtend, 30
-
-	.type	.Lswitch.table.huffExtend.1,@object # @switch.table.huffExtend.1
-	.p2align	1, 0x0
-.Lswitch.table.huffExtend.1:
-	.half	65535                           # 0xffff
-	.half	65533                           # 0xfffd
-	.half	65529                           # 0xfff9
-	.half	65521                           # 0xfff1
-	.half	65505                           # 0xffe1
-	.half	65473                           # 0xffc1
-	.half	65409                           # 0xff81
-	.half	65281                           # 0xff01
-	.half	65025                           # 0xfe01
-	.half	64513                           # 0xfc01
-	.half	63489                           # 0xf801
-	.half	61441                           # 0xf001
-	.half	57345                           # 0xe001
-	.half	49153                           # 0xc001
-	.half	32769                           # 0x8001
-	.size	.Lswitch.table.huffExtend.1, 30
-
-	.type	.Lswitch.table.readDHTMarker,@object # @switch.table.readDHTMarker
-	.p2align	2, 0x0
-.Lswitch.table.readDHTMarker:
-	.word	gHuffTab0
-	.word	gHuffTab1
-	.word	gHuffTab2
-	.word	gHuffTab3
-	.size	.Lswitch.table.readDHTMarker, 16
-
-	.type	.Lswitch.table.readDHTMarker.2,@object # @switch.table.readDHTMarker.2
-	.p2align	2, 0x0
-.Lswitch.table.readDHTMarker.2:
-	.word	gHuffVal0
-	.word	gHuffVal1
-	.word	gHuffVal2
-	.word	gHuffVal3
-	.size	.Lswitch.table.readDHTMarker.2, 16
-
-	.type	.L_MergedGlobals,@object        # @_MergedGlobals
-	.local	.L_MergedGlobals
-	.comm	.L_MergedGlobals,272,4
-	.globl	gInBufOfs
-gInBufOfs = .L_MergedGlobals
-	.size	gInBufOfs, 1
-	.globl	gInBufLeft
-gInBufLeft = .L_MergedGlobals+1
-	.size	gInBufLeft, 1
-	.globl	gCallbackStatus
-gCallbackStatus = .L_MergedGlobals+2
-	.size	gCallbackStatus, 1
-	.globl	gTemFlag
-gTemFlag = .L_MergedGlobals+3
-	.size	gTemFlag, 1
-	.globl	gBitsLeft
-gBitsLeft = .L_MergedGlobals+4
-	.size	gBitsLeft, 1
-	.globl	gValidHuffTables
-gValidHuffTables = .L_MergedGlobals+5
-	.size	gValidHuffTables, 1
-	.globl	gBitBuf
-gBitBuf = .L_MergedGlobals+6
-	.size	gBitBuf, 2
-	.globl	g_pNeedBytesCallback
-g_pNeedBytesCallback = .L_MergedGlobals+8
-	.size	g_pNeedBytesCallback, 4
-	.globl	g_pCallback_data
-g_pCallback_data = .L_MergedGlobals+12
-	.size	g_pCallback_data, 4
-	.globl	gInBuf
-gInBuf = .L_MergedGlobals+16
-	.size	gInBuf, 256
-	.ident	"clang version 24.0.0git (https://github.com/llvm/llvm-project.git 60f965b1f62c0c77bcdb2997ea9bb6603aa0d002)"
-	.section	".note.GNU-stack","",@progbits
-	.addrsig
-	.addrsig_sym gHuffTab0
-	.addrsig_sym gHuffTab1
-	.addrsig_sym gHuffTab2
-	.addrsig_sym gHuffTab3
-	.addrsig_sym gHuffVal0
-	.addrsig_sym gHuffVal1
-	.addrsig_sym gHuffVal2
-	.addrsig_sym gHuffVal3
-	.addrsig_sym .L_MergedGlobals
+.L209:
+	li	a0,0
+	ret
+	.size	decode_rle, .-decode_rle
+	.align	2
+	.globl	decode_delta
+	.type	decode_delta, @function
+decode_delta:
+	beq	a2,zero,.L216
+	lw	a5,0(a0)
+	li	a4,1
+	sw	a5,0(a1)
+	beq	a2,a4,.L216
+	sh2add	a2,a2,a0
+	addi	a1,a1,4
+	addi	a0,a0,4
+.L218:
+	lw	a4,0(a0)
+	addi	a0,a0,4
+	addi	a1,a1,4
+	add	a5,a5,a4
+	sw	a5,-4(a1)
+	bne	a0,a2,.L218
+.L216:
+	ret
+	.size	decode_delta, .-decode_delta
+	.align	2
+	.globl	decode_bitpacked
+	.type	decode_bitpacked, @function
+decode_bitpacked:
+	beq	a4,zero,.L223
+	sh2add	t6,a4,a3
+	beq	a2,zero,.L225
+	li	a6,0
+	li	t1,0
+	li	t5,7
+	li	t4,8
+.L229:
+	li	a4,0
+	li	a5,0
+.L231:
+	add	a7,a0,t1
+	sub	t3,t5,a6
+	slli	a5,a5,1
+	bgeu	t1,a1,.L226
+	lbu	a7,0(a7)
+	addi	a6,a6,1
+	bext	a7,a7,t3
+	or	a5,a5,a7
+	bne	a6,t4,.L227
+	addi	t1,t1,1
+	li	a6,0
+.L227:
+	addi	a4,a4,1
+	bne	a2,a4,.L231
+.L232:
+	sw	a5,0(a3)
+	addi	a3,a3,4
+	bne	t6,a3,.L229
+	ret
+.L223:
+	ret
+.L225:
+	sw	zero,0(a3)
+	addi	a5,a3,4
+	beq	a5,t6,.L223
+	sw	zero,4(a3)
+	addi	a3,a3,8
+	bne	t6,a3,.L225
+	ret
+.L226:
+	addi	a4,a4,1
+	beq	a2,a4,.L232
+.L228:
+	addi	a4,a4,1
+	slli	a5,a5,1
+	bgtu	a2,a4,.L228
+	sw	a5,0(a3)
+	addi	a3,a3,4
+	bne	t6,a3,.L229
+	ret
+	.size	decode_bitpacked, .-decode_bitpacked
+	.align	2
+	.globl	decode_bitpacked_fast
+	.type	decode_bitpacked_fast, @function
+decode_bitpacked_fast:
+	beq	a4,zero,.L277
+	addi	sp,sp,-16
+	sw	s0,12(sp)
+	li	s0,-2147483648
+	sh2add	t6,a4,a3
+	addi	s0,s0,-1
+	li	a6,0
+	li	a5,0
+	li	a4,0
+	li	t1,0
+	li	t4,56
+	li	t2,31
+	li	t0,-1
+.L271:
+	bgeu	a6,a2,.L247
+	bgtu	a6,t4,.L247
+.L267:
+	bleu	a1,t1,.L247
+	add	a7,a0,t1
+	lbu	a7,0(a7)
+	srli	t5,a5,24
+	slli	a4,a4,8
+	slli	a5,a5,8
+	addi	t3,a6,8
+	or	a5,a7,a5
+	add	a4,t5,a4
+	addi	a7,t1,1
+	bgtu	t3,t4,.L260
+	bleu	a1,a7,.L260
+	add	a7,a0,a7
+	lbu	t5,0(a7)
+	slli	a4,a4,8
+	srli	a7,a5,24
+	addi	t3,a6,16
+	slli	a5,a5,8
+	add	a4,a7,a4
+	or	a5,t5,a5
+	addi	a7,t1,2
+	bgtu	t3,t4,.L260
+	bleu	a1,a7,.L260
+	add	a7,a0,a7
+	lbu	t5,0(a7)
+	slli	a4,a4,8
+	srli	a7,a5,24
+	addi	t3,a6,24
+	slli	a5,a5,8
+	add	a4,a7,a4
+	or	a5,t5,a5
+	addi	a7,t1,3
+	bgtu	t3,t4,.L260
+	bleu	a1,a7,.L260
+	add	a7,a0,a7
+	lbu	t5,0(a7)
+	slli	a4,a4,8
+	srli	a7,a5,24
+	addi	t3,a6,32
+	slli	a5,a5,8
+	add	a4,a7,a4
+	or	a5,t5,a5
+	addi	a7,t1,4
+	bgtu	t3,t4,.L260
+	bleu	a1,a7,.L260
+	add	a7,a0,a7
+	lbu	t3,0(a7)
+	slli	a7,a4,8
+	srli	a4,a5,24
+	add	a7,a4,a7
+	slli	a5,a5,8
+	addi	t5,a6,40
+	or	a5,t3,a5
+	mv	a4,a7
+	addi	t3,t1,5
+	bgtu	t5,t4,.L258
+	bleu	a1,t3,.L258
+	add	t3,a0,t3
+	lbu	t5,0(t3)
+	slli	a7,a7,8
+	srli	a4,a5,24
+	addi	t3,a6,48
+	slli	a5,a5,8
+	add	a4,a4,a7
+	or	a5,t5,a5
+	addi	a7,t1,6
+	bgtu	t3,t4,.L260
+	bleu	a1,a7,.L260
+	add	a7,a0,a7
+	lbu	t3,0(a7)
+	slli	a4,a4,8
+	srli	a7,a5,24
+	addi	a6,a6,56
+	slli	a5,a5,8
+	add	a4,a7,a4
+	or	a5,t3,a5
+	addi	a7,t1,7
+	bne	a6,t4,.L263
+	bleu	a1,a7,.L263
+	add	a7,a0,a7
+	lbu	a7,0(a7)
+	srli	a6,a5,24
+	slli	a4,a4,8
+	slli	a5,a5,8
+	add	a4,a6,a4
+	addi	t1,t1,8
+	or	a5,a7,a5
+	li	a6,64
+.L247:
+	sub	a6,a6,a2
+	addi	a7,a6,-32
+	srl	t3,a4,a7
+	bge	a7,zero,.L265
+	sub	t3,t2,a6
+	slli	t5,a4,1
+	sll	t5,t5,t3
+	srl	t3,a5,a6
+	add	t3,t5,t3
+.L265:
+	mv	t5,t3
+	beq	a6,zero,.L281
+	blt	a7,zero,.L269
+	sll	a7,t0,a7
+	li	t5,0
+.L270:
+	sw	t3,0(a3)
+	addi	a3,a3,4
+	andn	a5,a5,t5
+	andn	a4,a4,a7
+	bne	t6,a3,.L271
+.L244:
+	lw	s0,12(sp)
+	addi	sp,sp,16
+	jr	ra
+.L281:
+	sw	t5,0(a3)
+	addi	a3,a3,4
+	beq	a3,t6,.L244
+.L282:
+	li	a5,0
+	li	a4,0
+	bne	a2,zero,.L267
+	li	t5,0
+	sw	t5,0(a3)
+	addi	a3,a3,4
+	bne	a3,t6,.L282
+	lw	s0,12(sp)
+	addi	sp,sp,16
+	jr	ra
+.L269:
+	sub	t5,t2,a6
+	srl	t5,s0,t5
+	sll	a7,t0,a6
+	add	a7,t5,a7
+	sll	t5,t0,a6
+	j	.L270
+.L260:
+	mv	a6,t3
+	mv	t1,a7
+	j	.L247
+.L258:
+	mv	a6,t5
+	mv	t1,t3
+	j	.L247
+.L263:
+	mv	t1,a7
+	j	.L247
+.L277:
+	ret
+	.size	decode_bitpacked_fast, .-decode_bitpacked_fast
+	.align	2
+	.globl	decode_fibonacci
+	.type	decode_fibonacci, @function
+decode_fibonacci:
+	mv	t5,a0
+	li	a2,0
+	li	a7,0
+	li	a3,0
+	li	a0,0
+	li	t1,2
+	li	a6,1
+	li	t3,7
+	j	.L288
+.L291:
+	lbu	a5,0(a5)
+	bext	a5,a5,a4
+	beq	a2,t3,.L285
+	neg	a4,a5
+	and	a3,a3,a5
+	addi	a2,a2,1
+	and	a4,a6,a4
+	add	t4,a6,t1
+	bne	a3,zero,.L283
+.L292:
+	mv	a6,t1
+	add	a0,a0,a4
+	mv	a3,a5
+	mv	t1,t4
+.L288:
+	add	a5,t5,a7
+	sub	a4,t3,a2
+	bgtu	a1,a7,.L291
+.L284:
+	j	.L284
+.L285:
+	neg	a4,a5
+	and	a3,a3,a5
+	addi	a7,a7,1
+	li	a2,0
+	and	a4,a6,a4
+	add	t4,a6,t1
+	beq	a3,zero,.L292
+.L283:
+	ret
+	.size	decode_fibonacci, .-decode_fibonacci
+	.align	2
+	.globl	decode_exp_golomb
+	.type	decode_exp_golomb, @function
+decode_exp_golomb:
+	li	a5,0
+	li	a4,0
+	li	a6,7
+	li	a2,0
+	add	a3,a0,a4
+	sub	a7,a6,a5
+	bleu	a1,a4,.L295
+.L311:
+	lbu	a3,0(a3)
+	bext	a3,a3,a7
+	beq	a5,a6,.L296
+	addi	a5,a5,1
+	bne	a3,zero,.L310
+.L298:
+	addi	a2,a2,1
+	add	a3,a0,a4
+	sub	a7,a6,a5
+	bgtu	a1,a4,.L311
+.L295:
+	j	.L295
+.L296:
+	addi	a4,a4,1
+	li	a5,0
+	beq	a3,zero,.L298
+.L310:
+	beq	a2,zero,.L304
+	li	a6,0
+	li	a3,0
+	li	t4,7
+	li	t3,8
+.L303:
+	sub	t1,t4,a5
+	add	a7,a0,a4
+	addi	a5,a5,1
+	slli	a3,a3,1
+	bleu	a1,a4,.L300
+	lbu	a7,0(a7)
+	bext	a7,a7,t1
+	or	a3,a3,a7
+	bne	a5,t3,.L301
+	addi	a4,a4,1
+	li	a5,0
+.L301:
+	addi	a6,a6,1
+	bne	a2,a6,.L303
+.L299:
+	bset	a0,x0,a2
+	addi	a0,a0,-1
+	add	a0,a0,a3
+	ret
+.L304:
+	bset	a0,x0,a2
+	li	a3,0
+	addi	a0,a0,-1
+	add	a0,a0,a3
+	ret
+.L300:
+	addi	a6,a6,1
+	beq	a2,a6,.L299
+.L302:
+	addi	a6,a6,1
+	slli	a3,a3,1
+	bgtu	a2,a6,.L302
+	bset	a0,x0,a2
+	addi	a0,a0,-1
+	add	a0,a0,a3
+	ret
+	.size	decode_exp_golomb, .-decode_exp_golomb
+	.align	2
+	.globl	decode_huffman_tree
+	.type	decode_huffman_tree, @function
+decode_huffman_tree:
+	mv	t4,a0
+	li	a3,0
+	li	a6,0
+	li	a5,0
+	li	t3,7
+	li	t5,8
+	j	.L313
+.L316:
+	bleu	a1,a6,.L314
+	lbu	a4,0(t1)
+	addi	a3,a3,1
+	bext	a4,a4,a7
+	bne	a3,t5,.L314
+	addi	a6,a6,1
+	li	a3,0
+.L314:
+	sh2add	a4,a4,a5
+	lw	a5,0(a4)
+	blt	a5,zero,.L318
+.L313:
+	sh1add	a5,a5,a5
+	sh2add	a5,a5,a2
+	lw	a0,8(a5)
+	add	t1,t4,a6
+	sub	a7,t3,a3
+	li	a4,0
+	blt	a0,zero,.L316
+	ret
+.L318:
+	li	a0,-1
+	ret
+	.size	decode_huffman_tree, .-decode_huffman_tree
+	.align	2
+	.globl	decode_huffman_table
+	.type	decode_huffman_table, @function
+decode_huffman_table:
+	beq	a3,zero,.L321
+	beq	a1,zero,.L329
+	li	a6,1
+	lbu	a5,0(a0)
+	li	a4,0
+	beq	a1,a6,.L330
+	lbu	a7,1(a0)
+	srli	a4,a5,24
+	li	a6,2
+	slli	a5,a5,8
+	or	a5,a7,a5
+	beq	a1,a6,.L331
+	lbu	a4,2(a0)
+	slli	a5,a5,8
+	li	a6,3
+	or	a5,a5,a4
+	li	a4,0
+	beq	a1,a6,.L332
+	lbu	a7,3(a0)
+	srli	a4,a5,24
+	li	a6,4
+	slli	a5,a5,8
+	or	a5,a5,a7
+	beq	a1,a6,.L333
+	lbu	a7,4(a0)
+	srli	t1,a5,24
+	slli	a4,a4,8
+	slli	a5,a5,8
+	li	a6,5
+	add	a4,t1,a4
+	or	a5,a5,a7
+	beq	a1,a6,.L334
+	lbu	a7,5(a0)
+	srli	t1,a5,24
+	slli	a4,a4,8
+	slli	a5,a5,8
+	li	a6,6
+	add	a4,t1,a4
+	or	a5,a5,a7
+	beq	a1,a6,.L335
+	lbu	a7,6(a0)
+	slli	a6,a4,8
+	srli	a4,a5,24
+	slli	a5,a5,8
+	add	a6,a4,a6
+	or	a5,a5,a7
+	li	a7,7
+	mv	a4,a6
+	beq	a1,a7,.L337
+	lbu	a1,7(a0)
+	li	a4,64
+	sub	a3,a4,a3
+	srli	a0,a5,24
+	slli	a6,a6,8
+	slli	a5,a5,8
+	addi	a4,a3,-32
+	add	a6,a0,a6
+	or	a5,a5,a1
+	blt	a4,zero,.L322
+	srl	a6,a6,a4
+	sh2add	a2,a6,a2
+.L321:
+	lbu	a5,2(a2)
+	beq	a5,zero,.L336
+	lhu	a0,0(a2)
+	ret
+.L336:
+	li	a0,-1
+	ret
+.L322:
+	li	a1,31
+	slli	a4,a6,1
+	sub	a1,a1,a3
+	srl	a6,a5,a3
+	sll	a5,a4,a1
+	add	a6,a5,a6
+	sh2add	a2,a6,a2
+	j	.L321
+.L329:
+	li	a5,0
+	li	a4,0
+.L324:
+	sub	a1,a1,a3
+	addi	a3,a1,-32
+	blt	a3,zero,.L326
+	srl	a4,a4,a3
+	sh2add	a2,a4,a2
+	j	.L321
+.L326:
+	li	a0,31
+	slli	a3,a4,1
+	sub	a0,a0,a1
+	srl	a4,a5,a1
+	sll	a5,a3,a0
+	add	a4,a5,a4
+	sh2add	a2,a4,a2
+	j	.L321
+.L330:
+	li	a1,8
+	j	.L324
+.L331:
+	li	a1,16
+	j	.L324
+.L332:
+	li	a1,24
+	j	.L324
+.L333:
+	li	a1,32
+	j	.L324
+.L334:
+	li	a1,40
+	j	.L324
+.L335:
+	li	a1,48
+	j	.L324
+.L337:
+	li	a1,56
+	j	.L324
+	.size	decode_huffman_table, .-decode_huffman_table
+	.section	.rodata.str1.4,"aMS",@progbits,1
+	.align	2
+.LC1:
+	.string	"Unary: %u\n"
+	.align	2
+.LC2:
+	.string	"Elias gamma: %u\n"
+	.align	2
+.LC3:
+	.string	"ULEB128: %llu\n"
+	.align	2
+.LC4:
+	.string	"Zigzag 1: %d\n"
+	.align	2
+.LC5:
+	.string	"Zigzag 2: %d\n"
+	.align	2
+.LC6:
+	.string	"Zigzag 3: %d\n"
+	.align	2
+.LC7:
+	.string	"RLE: "
+	.align	2
+.LC8:
+	.string	"Delta:"
+	.align	2
+.LC9:
+	.string	" %d"
+	.align	2
+.LC10:
+	.string	"Exp-Golomb: %u\n"
+	.section	.text.startup,"ax",@progbits
+	.align	2
+	.globl	main
+	.type	main, @function
+main:
+	addi	sp,sp,-80
+	sw	ra,76(sp)
+	sw	s0,72(sp)
+	sw	s1,68(sp)
+	sw	s2,64(sp)
+	li	a5,0
+	li	a4,3
+	li	a1,0
+	beq	a5,a4,.L339
+.L379:
+	addi	a5,a5,1
+	addi	a1,a1,1
+	bne	a5,a4,.L379
+.L339:
+	lui	a0,%hi(.LC1)
+	addi	a0,a0,%lo(.LC1)
+	call	printf
+	li	a5,0
+	li	a4,7
+	li	a3,0
+	li	a2,0
+	li	a1,26
+	beq	a5,a4,.L342
+.L380:
+	addi	a5,a5,1
+	sub	a0,a4,a5
+	bne	a3,zero,.L343
+	bext	a3,a1,a0
+	addi	a2,a2,1
+	li	a1,26
+	bne	a5,a4,.L380
+.L342:
+	j	.L342
+.L343:
+	beq	a2,zero,.L364
+	li	a7,7
+	sub	a3,a7,a5
+	li	a6,26
+	li	a1,2
+	bext	a3,a6,a3
+	li	a0,8
+	addi	a5,a5,1
+	li	a4,0
+	or	a1,a3,a1
+	beq	a5,a0,.L345
+.L381:
+	addi	a4,a4,1
+	beq	a4,a2,.L344
+	sub	a3,a7,a5
+	slli	a1,a1,1
+	bext	a3,a6,a3
+	addi	a5,a5,1
+	or	a1,a3,a1
+	bne	a5,a0,.L381
+.L345:
+	addi	a5,a4,1
+	beq	a2,a5,.L344
+	addi	a4,a4,2
+	slli	a1,a1,1
+	beq	a4,a2,.L344
+.L349:
+	addi	a4,a4,1
+	slli	a1,a1,1
+	bltu	a4,a2,.L349
+.L344:
+	lui	a0,%hi(.LC2)
+	addi	a0,a0,%lo(.LC2)
+	call	printf
+	lui	a0,%hi(.LC3)
+	li	a2,622592
+	addi	a2,a2,1893
+	li	a3,0
+	addi	a0,a0,%lo(.LC3)
+	call	printf
+	lui	a0,%hi(.LC4)
+	li	a1,-1
+	addi	a0,a0,%lo(.LC4)
+	call	printf
+	lui	a0,%hi(.LC5)
+	li	a1,1
+	addi	a0,a0,%lo(.LC5)
+	call	printf
+	lui	a0,%hi(.LC6)
+	li	a1,-2
+	addi	a0,a0,%lo(.LC6)
+	call	printf
+	li	a4,1107509248
+	li	a5,16384
+	addi	a4,a4,260
+	addi	a5,a5,770
+	sw	a4,4(sp)
+	sh	a5,8(sp)
+	addi	a0,sp,4
+	addi	a6,sp,8
+	addi	s1,sp,32
+	li	s0,0
+	li	a1,32
+.L357:
+	lbu	a3,0(a0)
+	beq	a3,zero,.L350
+.L356:
+	lbu	a2,1(a0)
+	add	a3,a3,s0
+.L352:
+	addi	s0,s0,1
+	add	a4,s1,s0
+	sb	a2,-1(a4)
+	beq	s0,a3,.L351
+	bne	s0,a1,.L352
+	bne	a0,a6,.L355
+.L354:
+	lui	a0,%hi(.LC7)
+	addi	a0,a0,%lo(.LC7)
+	call	printf
+	beq	s0,zero,.L359
+.L358:
+	add	s0,s0,s1
+	mv	s2,s1
+.L360:
+	lbu	a0,0(s2)
+	addi	s2,s2,1
+	call	putchar
+	bne	s2,s0,.L360
+.L359:
+	li	a0,10
+	call	putchar
+	lui	a0,%hi(.LC8)
+	li	a1,10
+	li	a2,12
+	li	a3,15
+	li	a4,14
+	li	a5,19
+	addi	a0,a0,%lo(.LC8)
+	lui	s2,%hi(.LC9)
+	sw	a1,12(sp)
+	sw	a2,16(sp)
+	sw	a3,20(sp)
+	sw	a4,24(sp)
+	sw	a5,28(sp)
+	addi	s0,sp,12
+	call	printf
+	addi	s2,s2,%lo(.LC9)
+.L361:
+	lw	a1,0(s0)
+	mv	a0,s2
+	addi	s0,s0,4
+	call	printf
+	bne	s0,s1,.L361
+	li	a0,10
+	call	putchar
+	li	a5,40
+	mv	a0,sp
+	li	a1,1
+	sb	a5,0(sp)
+	call	decode_exp_golomb
+	mv	a1,a0
+	lui	a0,%hi(.LC10)
+	addi	a0,a0,%lo(.LC10)
+	call	printf
+	lw	ra,76(sp)
+	lw	s0,72(sp)
+	lw	s1,68(sp)
+	lw	s2,64(sp)
+	li	a0,0
+	addi	sp,sp,80
+	jr	ra
+.L351:
+	beq	a0,a6,.L354
+	addi	a0,a0,2
+	beq	s0,a1,.L355
+.L362:
+	lbu	a3,0(a0)
+	bne	a3,zero,.L356
+	beq	a0,a6,.L354
+	addi	a0,a0,2
+	j	.L357
+.L355:
+	lui	a0,%hi(.LC7)
+	addi	a0,a0,%lo(.LC7)
+	call	printf
+	li	s0,32
+	j	.L358
+.L364:
+	li	a1,1
+	j	.L344
+.L350:
+	beq	a0,a6,.L354
+	addi	a0,a0,2
+	j	.L362
+	.size	main, .-main
+	.globl	__mulsi3
+	.globl	__ashldi3
+	.ident	"GCC: (g6afcc4f6d) 16.1.0"
+	.section	.note.GNU-stack,"",@progbits

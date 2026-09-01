@@ -18,17 +18,17 @@ module testbench();
     
     always @(posedge clk) begin
         $display(
-            "x1=%d x2=%d x5=%d, #256=%d, #255 = %d",
+            "x1=%d x15=%d x16=%d, #256=%d, #255 = %d",
             risc_v.reg_file.registers[1],
-            risc_v.reg_file.registers[2],
-            risc_v.reg_file.registers[5],
+            risc_v.reg_file.registers[15],
+            risc_v.reg_file.registers[16],
             risc_v.data_mem.mem[64],
             risc_v.data_mem.mem[255]
         );
     end
 
     initial begin
-        #200;
+        #2000;
         $finish;
     end
 endmodule

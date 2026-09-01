@@ -6,4 +6,5 @@
 *.o
 *.asm
 *.out
+*.png
 program_hex.txt

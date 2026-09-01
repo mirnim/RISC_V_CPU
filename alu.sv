@@ -20,6 +20,33 @@ module alu import constants::*; (
         ALU_SRA: result = $signed(input1) >>> input2[4:0];
         ALU_SLT: result = ($signed(input1) < $signed(input2)) ? 32'b1 : 32'b0;
         ALU_SLTU: result = (input1 < input2) ? 32'b1 : 32'b0;
+        ALU_ANDN: result = input1 & ~input2;
+        ALU_ORN: result = input1 | ~input2;
+        ALU_XNOR: result = ~(input1 ^ input2);
+        ALU_CLZ: begin
+            for (i = 31; i >= 0; i = i-1) begin
+                if (input1[i]) begin
+                    result = 32-i;
+                    break;
+                end
+            end
+        end
+        ALU_CTZ: begin
+            for (i = 0; i < 32; i = i+1) begin
+                if (input1[i]) begin
+                    result = i;
+                    break;
+                end
+            end
+        end
+        ALU_CPOP: begin
+            for (i = 0; i < 32; i = i+1) begin
+                if (input1[i]) begin
+                    result = result + 1;
+                end
+            end
+        end
+        
         default: ;
         endcase
     end

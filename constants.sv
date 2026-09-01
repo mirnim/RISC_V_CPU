@@ -68,9 +68,9 @@ package constants;
         ALU_SLT, //Set less than (1 if A<B else 0)
         ALU_SLTU, //SLT but with unsigned
         //ZBA extension
-        ALU_SH1ADD,
-        ALU_SH2ADD,
-        ALU_SH3ADD,
+        // ALU_SH1ADD,
+        // ALU_SH2ADD,
+        // ALU_SH3ADD,
         //ZBB extension
         ALU_ANDN,
         ALU_ORN,
@@ -82,12 +82,12 @@ package constants;
         ALU_MAXU,
         ALU_MIN,
         ALU_MINU,
-        ALU_SEXT_B,
-        ALU_SEXT_H,
-        ALU_ZEXT_H,
-        ALU_ROL,
-        ALU_ROR,
-        ALU_RORI,
+        // ALU_SEXT_B,
+        // ALU_SEXT_H,
+        // ALU_ZEXT_H,
+        // ALU_ROL,
+        // ALU_ROR,
+        // ALU_RORI,
         ALU_ORC_B,
         ALU_REV8,
         //ZBS extension
